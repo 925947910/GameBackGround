@@ -102,8 +102,23 @@ public class GameUserController extends BasicController {
     	
        
     }
-   
-
-
+    @RequestMapping("/gameUser_add.do")
+    public String toGameUserAddPage(Model model) {
+        //新增页面标识
+        model.addAttribute("pageFlag", "addPage");
+        return "game/gameUser_edit";
+    }
+    @RequestMapping("/ajax_save_gameUser.do")
+	@ResponseBody
+	public BussinessMsg saveGameUser(String acc,String nick,String phone) throws Exception {
+		if(GameUserService.saveGameUser(acc,nick, phone)) {
+			return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
+		}else {
+			return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_ERROR);
+		}
+		
+		
+	}
+    
 
 }

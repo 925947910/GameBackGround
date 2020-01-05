@@ -34,11 +34,14 @@ package com.yxb.cms.service.game;
 
 
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.yxb.cms.architect.annotation.SystemServiceLog;
 import com.yxb.cms.architect.constant.BusinessConstants;
 import com.yxb.cms.architect.constant.BussinessCode;
 import com.yxb.cms.architect.constant.RedisKeys;
 import com.yxb.cms.architect.utils.BussinessMsgUtil;
+import com.yxb.cms.architect.utils.HttpClientUtil;
 import com.yxb.cms.dao.BillsMapper;
 import com.yxb.cms.dao.GameUserMapper;
 import com.yxb.cms.domain.bo.BussinessMsg;
@@ -129,6 +132,30 @@ public class GameUserService {
 		bills.setTime(new Date().getTime()/1000);
 		BillsMapper.writeBills(bills);
 	}
+
+	public boolean saveGameUser(String acc, String nick, String phone) {
+		try {
+			HttpClientUtil client=HttpClientUtil.getInstance();
+			Map<String,Object> dataMap=new  HashMap<String, Object>(); 
+			Map<String,String>  param=new  HashMap<String, String>(); 
+			dataMap.put("plat", 0+"");
+			dataMap.put("token", "");
+			dataMap.put("acc", acc);
+			dataMap.put("nick", nick);
+			dataMap.put("phone", phone);
+			String paramStr=JSON.toJSONString(dataMap);
+			param=new  HashMap<String, String>();  
+			param.put("param",paramStr);
+			String uri=redisClient.hget(4,RedisKeys._GAME_INTERFACE_URI,RedisKeys._GAME_REGIST);
+			String JsonAuth=client.doPostWithJsonResult(uri, param);
+			JSONObject AuthData=JSON.parseObject(JsonAuth);
+			System.out.println(JsonAuth);
+			int resultCode=AuthData.getIntValue("status");
+			return true;
+		} catch (Exception e) {
+			log.error("",e);
+			return false;
+		}	}
 
 
 }

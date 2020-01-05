@@ -37,6 +37,11 @@
                         <a class="layui-btn userSearchList_btn" lay-submit lay-filter="userSearchFilter"><i class="layui-icon larry-icon larry-chaxun7"></i>查询</a>
                     </form>
                 </div>
+                 <shiro:hasPermission name="B69B6W6k">
+                    <div class="layui-inline">
+                        <a class="layui-btn layui-btn-normal gameUserAdd_btn"> <i class="layui-icon larry-icon larry-xinzeng1"></i>新增玩家</a>
+                    </div>
+                </shiro:hasPermission>
      <!--      <shiro:hasPermission name="0rbT8t2P">
                     <div class="layui-inline">
                         <a class="layui-btn layui-btn-normal userAdd_btn"> <i class="layui-icon larry-icon larry-xinzeng1"></i>新增用户</a>
@@ -126,7 +131,12 @@
             });
 
         });
-        
+
+        /**新增*/
+        $(".gameUserAdd_btn").click(function(){
+            var url = "${ctx}/gameUser/gameUser_add.do";
+            common.cmsLayOpen('新增玩家',url,'550px','265px');
+        });
         /**监听工具条*/
         table.on('tool(userTableId)', function(obj){
             var data = obj.data; //获得当前行数据
