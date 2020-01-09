@@ -37,6 +37,7 @@ package com.yxb.cms.service.game;
 import com.yxb.cms.architect.annotation.SystemServiceLog;
 import com.yxb.cms.architect.constant.BusinessConstants;
 import com.yxb.cms.architect.constant.BussinessCode;
+import com.yxb.cms.architect.constant.Constants;
 import com.yxb.cms.architect.utils.BussinessMsgUtil;
 import com.yxb.cms.architect.utils.QRCodeUtil;
 import com.yxb.cms.architect.utils.TokenMaker;
@@ -205,7 +206,7 @@ public class GameMineralService {
 	}
 
 	public  void writeMineralBill(int Uid,int Cost , int Type, int tagId,String Reason,int mineral,int freeze) throws Exception {	
-		String nick=redisClient.hget(0, "user:"+Uid,"nick");
+		String nick=redisClient.hget(Constants.REDIS_DB0, "user:"+Uid,"nick");
 		mineralBills  mineralBills= new  mineralBills();
 		mineralBills.setUid(Uid);
 		mineralBills.setNick(nick);

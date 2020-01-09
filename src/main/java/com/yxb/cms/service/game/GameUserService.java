@@ -39,6 +39,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.yxb.cms.architect.annotation.SystemServiceLog;
 import com.yxb.cms.architect.constant.BusinessConstants;
 import com.yxb.cms.architect.constant.BussinessCode;
+import com.yxb.cms.architect.constant.Constants;
 import com.yxb.cms.architect.constant.RedisKeys;
 import com.yxb.cms.architect.utils.BussinessMsgUtil;
 import com.yxb.cms.architect.utils.HttpClientUtil;
@@ -124,8 +125,8 @@ public class GameUserService {
         return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
     }
 	public  void writeBill(int Uid,int Cost ,int Remain, int Type, int TagId,String Reason,String accountOut,String accountIn) throws Exception {	
-		redisClient.hset(0, "user:"+Uid,"coin",Remain+"");
-		String nick=redisClient.hget(0, "user:"+Uid,"nick");
+		redisClient.hset(Constants.REDIS_DB0, "user:"+Uid,"coin",Remain+"");
+		String nick=redisClient.hget(Constants.REDIS_DB0, "user:"+Uid,"nick");
 		bills  bills= new  bills();
 		bills.setUid(Uid);
 		bills.setNick(nick);
@@ -154,7 +155,7 @@ public class GameUserService {
 			String paramStr=JSON.toJSONString(dataMap);
 			param=new  HashMap<String, String>();  
 			param.put("param",paramStr);
-			String uri=redisClient.hget(4,RedisKeys._GAME_INTERFACE_URI,RedisKeys._GAME_REGIST);
+			String uri=redisClient.hget(Constants.REDIS_DB4,RedisKeys._GAME_INTERFACE_URI,RedisKeys._GAME_REGIST);
 			String JsonAuth=client.doPostWithJsonResult(uri, param);
 			JSONObject AuthData=JSON.parseObject(JsonAuth);
 			System.out.println(JsonAuth);
