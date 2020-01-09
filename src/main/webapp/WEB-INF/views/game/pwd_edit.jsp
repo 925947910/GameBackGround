@@ -19,22 +19,6 @@
 <body class="childrenBody" style="font-size: 12px; margin: 10px 10px 0;">
 	<form class="layui-form layui-form-pane">
 
-
-
-		<div class="layui-form-item">
-			<label class="layui-form-label">新增矿石数量</label>
-			<div class="layui-input-block">
-				<input type="text" class="layui-input" name="mineral" maxlength="20"
-					value="" placeholder="请输入新增矿石数量">
-			</div>
-		</div>
-		<div class="layui-form-item">
-			<label class="layui-form-label">操作者Id</label>
-			<div class="layui-input-block">
-				<input type="text" class="layui-input" name="tagId" maxlength="20"
-					value="${LOGIN_NAME.userId}" disabled="disabled">
-			</div>
-		</div>
 		<div class="layui-form-item">
 			<label class="layui-form-label">玩家Id</label>
 			<div class="layui-input-block">
@@ -43,15 +27,23 @@
 			</div>
 		</div>
 		<div class="layui-form-item">
-			<label class="layui-form-label">矿石备注</label>
+			<label class="layui-form-label">密码</label>
 			<div class="layui-input-block">
-				<input type="text" class="layui-input" name="desc" maxlength="20"
-					value="" placeholder="请输入矿石备注">
+				<input type="text" class="layui-input" name="pwd" maxlength="20"
+					value="" placeholder="请输入新密码">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">交易密码</label>
+			<div class="layui-input-block">
+				<input type="text" class="layui-input" name="extractPwd" maxlength="20"
+					value="" placeholder="请输入新交易密码">
 			</div>
 		</div>
 
+
 		<div class="layui-form-item" style="text-align: center;">
-			<button class="layui-btn" lay-submit="" lay-filter="addMineral">保存</button>
+			<button class="layui-btn" lay-submit="" lay-filter="updatePwd">保存</button>
 			<button type="layui-btn" id="cancle"
 				class="layui-btn layui-btn-primary">取消</button>
 
@@ -68,23 +60,23 @@
 
 
         /**保存*/
-        form.on("submit(addMineral)",function(data){
-            var addMineralLoading = top.layer.msg('数据提交中，请稍候',{icon: 16,time:false,shade:0.8});
+        form.on("submit(updatePwd)",function(data){
+            var updatePwdLoading = top.layer.msg('数据提交中，请稍候',{icon: 16,time:false,shade:0.8});
             //登陆验证
             $.ajax({
-                url : '${ctx}/gameMineral/ajax_add_mineral.do',
+                url : '${ctx}/gameUser/ajax_update_pwd.do',
                 type : 'post',
                 async: false,
                 data : data.field,
                 success : function(data) {
                     if(data.returnCode == 0000){
-                        top.layer.close(addMineralLoading);
+                        top.layer.close(updatePwdLoading);
                         common.cmsLaySucMsg("添加成功！")
                         var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                         parent.layer.close(index); //再执行关闭                        //刷新父页面
                         parent.location.reload();
                     }else{
-                        top.layer.close(addMineralLoading);
+                        top.layer.close(addCoinLoading);
                         common.cmsLayErrorMsg(data.returnMessage);
                     }
                 },error:function(data){

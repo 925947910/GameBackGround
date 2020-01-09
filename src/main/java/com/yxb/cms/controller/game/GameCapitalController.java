@@ -168,14 +168,10 @@ public class GameCapitalController extends BasicController {
 		return str;
 		
 	}
-	@RequestMapping("/ajax_unfreeze")
+	@RequestMapping("/ajax_order_review.do")
 	@ResponseBody
-	public BussinessMsg unFreeze(int freezeId) throws Exception {
-		if(GameCapitalService.unFreeze(freezeId)) {
-			return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
-		}else {
-			return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_ERROR);
-		}
+	public BussinessMsg orderReview(int orderId,int succ) throws Exception {
+			return GameCapitalService.orderReview(orderId,succ);
 		
 		
 	}

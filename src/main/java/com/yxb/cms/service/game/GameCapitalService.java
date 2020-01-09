@@ -35,15 +35,21 @@ package com.yxb.cms.service.game;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.yxb.cms.architect.annotation.SystemServiceLog;
+import com.yxb.cms.architect.constant.BussinessCode;
 import com.yxb.cms.architect.constant.RedisKeys;
+import com.yxb.cms.architect.utils.BussinessMsgUtil;
 import com.yxb.cms.architect.utils.HttpClientUtil;
 import com.yxb.cms.dao.BillsMapper;
 import com.yxb.cms.dao.FreezeMapper;
 import com.yxb.cms.dao.GameRecMapper;
+import com.yxb.cms.dao.GameUserMapper;
 import com.yxb.cms.dao.OrderMapper;
+import com.yxb.cms.domain.bo.BussinessMsg;
 import com.yxb.cms.domain.vo.billsInfo;
 import com.yxb.cms.domain.vo.freezeInfo;
 import com.yxb.cms.domain.vo.gameRec;
+import com.yxb.cms.domain.vo.gameUser;
 import com.yxb.cms.domain.vo.orderInfo;
 import com.yxb.cms.handler.RedisClient;
 
@@ -52,6 +58,7 @@ import org.apache.logging.log4j.Logger;
 import org.nutz.json.Json;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -76,7 +83,10 @@ public class GameCapitalService {
     private OrderMapper  OrderMapper;
     @Autowired
     private GameRecMapper GameRecMapper;
-
+    @Autowired
+    private GameUserMapper GameUserMapper;
+    @Autowired 
+    private  GameUserService GameUserService;
     /**
      * 用户信息分页显示
      * @param user 用户实体
@@ -124,24 +134,37 @@ public class GameCapitalService {
         return Json.toJson(map);
     }
 
-	public boolean unFreeze(int id) {
-		try {
-			HttpClientUtil client=HttpClientUtil.getInstance();
-			Map<String,Object> dataMap=new  HashMap<String, Object>(); 
-			Map<String,String>  param=new  HashMap<String, String>(); 
-			dataMap.put("freezeId", id+"");
-			String paramStr=JSON.toJSONString(dataMap);
-			param=new  HashMap<String, String>();  
-			param.put("param",paramStr);
-			String uri=redisClient.hget(4,RedisKeys._GAME_INTERFACE_URI,RedisKeys._GAME_UNFREEZE);
-			String JsonAuth=client.doPostWithJsonResult(uri, param);
-			JSONObject AuthData=JSON.parseObject(JsonAuth);
-			int resultCode=AuthData.getIntValue("status");
-			return true;
-		} catch (Exception e) {
-			log.error("",e);
-			return false;
+    @SystemServiceLog(description="审核提现Service")
+    public BussinessMsg   orderReview(int orderId,int succ)throws Exception{
+    	if(succ==1) {
+    		return ReviewSucc(orderId);
+    	}else {
+    		return ReviewFailed(orderId);
+    	}
+    	
+    }
+    @Transactional
+    public BussinessMsg   ReviewSucc(int orderId)throws Exception{
+    	OrderMapper.reviewOrder(orderId, 3);
+        return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
+    }
+    @Transactional
+    public BussinessMsg   ReviewFailed(int orderId)throws Exception{
+    	List<orderInfo> orders=OrderMapper.OrderInfoById(orderId);
+    	orderInfo order=orders.get(0);
+    	List<gameUser> DBUsers=GameUserMapper.checkCoin(order.getUid());
+		gameUser DBUser=DBUsers.get(0);
+		int version = DBUser.getVersion();
+		int oldCoin = DBUser.getCoin();
+		int newCoin = oldCoin+order.getCoin();
+		if(newCoin<0) {
+			throw new RuntimeException("金币不能为负");
 		}
-		
-	}
+		if(GameUserMapper.coinChange(order.getUid(), newCoin, version)!=1) {
+			throw new RuntimeException("修改金币失败");
+		}
+		GameUserService.writeBill(order.getUid(),order.getCoin(), newCoin, GameUserService.EVENT_COIN_GM_CHARGE, orderId,"审核拒绝返还金币","","");
+		OrderMapper.reviewOrder(orderId, 4);
+        return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
+    }
 }

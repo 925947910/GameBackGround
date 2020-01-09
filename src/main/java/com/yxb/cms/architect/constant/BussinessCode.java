@@ -83,7 +83,8 @@ public enum BussinessCode {
     GEN_MINERALCODE_FAILED("1513","生成矿卡失败"),
     FAILED_MINERALCODE_FAILED("1514","失效矿卡失败"),
     ADD_COIN_FAILED("1515","添加金币失败"),
-	ADD_MINERAL_FAILED("1516","添加金币失败");
+	ADD_MINERAL_FAILED("1516","添加金币失败"),
+	UPDATE_PWD_FAILED("1517","修改密码失败");
 
 	BussinessCode(String code, String msg) {
 		this.code = code;

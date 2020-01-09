@@ -95,17 +95,15 @@
             cols: [[
                 {type:"checkbox"},
                 {field:'id', title: '订单ID',align:'center' },
-                {field:'orderLocal', title: '本地订单号',align:'center'},
-                {field:'orderRemote', title:'第三方订单号',align:'center'},
-                {field:'plat', title: '平台ID',align:'center'},
                 {field:'uid', title: '玩家ID',align:'center'},
-                {field:'cost', title: '订单金额',align:'center'},
-                {field:'currency', title: '币种',align:'center'},
+                {field:'accountOut', title: '账号',align:'center'},
+                {field:'accountIn', title: '昵称',align:'center'},
                 {field:'coin', title: '金币',align:'center',templet: '#coinTpl'},
                 {field:'orderType', title: '订单类型',align:'center',templet: '#orderTypeTpl'},
                 {field:'status', title: '订单状态',align:'center',templet: '#statusTpl'},
-                {field:'time', title: '时间',align:'center',templet:"<div>{{layui.util.toDateString(d.time*1000)}}</div>"}
-            ]],
+                {field:'time', title: '时间',align:'center',templet:"<div>{{layui.util.toDateString(d.time*1000)}}</div>"},
+                {title: '操作', align:'center', width: '17%',toolbar: '#orderBar'}
+                ]],
             page: true,
             done: function (res, curr, count) {
                 common.resizeGrid();
@@ -137,7 +135,23 @@
 
         });
 
-    
+        /**监听工具条*/
+        table.on('tool(orderTableId)', function(obj){
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值
+            if(layEvent === 'orderOn') {
+            	var orderId = data.id;
+                var url = "${ctx}/gameCapital/ajax_order_review.do";
+                var param = {orderId:orderId,succ:1};
+                common.ajaxCmsConfirm('系统提示', '你确定审核冻结资金?',url,param);
+            }else if(layEvent === 'orderOff'){
+            	var orderId = data.id;
+                var url = "${ctx}/gameCapital/ajax_order_review.do";
+                var param = {orderId:orderId,succ:0};
+                common.ajaxCmsConfirm('系统提示', '你确定审核冻结资金?',url,param);
+            }
+            
+        });
 
 
     });
@@ -169,7 +183,20 @@
     {{d.status}}
     {{# }  }}
 </script>
-
+</script>
+	<!--工具条 -->
+	<script type="text/html" id="orderBar">
+    <div class="layui-btn-group">
+        <shiro:hasPermission name="gA3ITNsk">
+            <a class="layui-btn layui-btn-xs orderOn" lay-event="orderOn"><i class="layui-icon larry-icon larry-bianji2"></i>审核通过</a>
+        </shiro:hasPermission>
+    </div>
+    <div class="layui-btn-group">
+        <shiro:hasPermission name="gA3ITNsk">
+            <a class="layui-btn layui-btn-xs orderOff" lay-event="orderOff"><i class="layui-icon larry-icon larry-bianji2"></i>审核拒绝</a>
+        </shiro:hasPermission>
+    </div>
+</script>
 	
 
 

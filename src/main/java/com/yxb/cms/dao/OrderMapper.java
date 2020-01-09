@@ -35,6 +35,7 @@ package com.yxb.cms.dao;
 
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.yxb.cms.domain.vo.orderInfo;
 
@@ -64,7 +65,8 @@ public interface OrderMapper {
      * @return
      */
     List<orderInfo> selectOrderInfoListByPage(orderInfo orderInfo);
-
+    List<orderInfo> OrderInfoById(int id);
+    int reviewOrder(@Param("id")int id,@Param("status")int status);
     
     
 }

@@ -28,7 +28,9 @@
                         <div class="layui-input-inline" style="width:110px;">
                             <select name="searchTerm" >
                                 <option value="idTerm">玩家ID</option>
+                                <option value="accTerm">玩家账号</option>
                                 <option value="nickTerm">玩家昵称</option>
+                               
                             </select>
                         </div>
                         <div class="layui-input-inline" style="width:145px;">
@@ -37,7 +39,7 @@
                         <a class="layui-btn userSearchList_btn" lay-submit lay-filter="userSearchFilter"><i class="layui-icon larry-icon larry-chaxun7"></i>查询</a>
                     </form>
                 </div>
-                 <shiro:hasPermission name="B69B6W6k">
+                 <shiro:hasPermission name="CWiObpIP">
                     <div class="layui-inline">
                         <a class="layui-btn layui-btn-normal gameUserAdd_btn"> <i class="layui-icon larry-icon larry-xinzeng1"></i>新增玩家</a>
                     </div>
@@ -94,11 +96,13 @@
             cols: [[
                 {type:"checkbox"},
                 {field:'id', title: '玩家ID',align:'center' },
+                {field:'acc', title: '玩家账号',align:'center'},
+                {field:'pwd', title: '玩家密码',align:'center'},
+                {field:'extractPwd', title: '交易密码',align:'center'},
                 {field:'nick', title: '玩家昵称',align:'center'},
                 {field:'phone', title: '电话号码',align:'center'},
                 {field:'email', title: 'Email',align:'center'},
                 {field:'coin', title: '金币',align:'center' ,templet: '#coinTpl'},
-                {field:'mineral', title: '矿石',align:'center' ,templet: '#mineralTpl'},
                 {title: '操作', align:'center', width: '17%',toolbar: '#userBar'}
             ]],
             page: true,
@@ -157,7 +161,14 @@
                     common.cmsLayOpen('编辑矿石',url,'550px','265px');
 
                
+                }else if(layEvent === 'update_user'){
+                	 var userId = data.id;
+                     var act = "pwd";
+                     var url =  "${ctx}/gameUser/user_update.do?userId="+userId+"&act="+act;
+                     common.cmsLayOpen('修改密码',url,'550px','265px');
+                	
                 }
+            
         });
 
 
@@ -174,6 +185,9 @@
     <div class="layui-btn-group">
         <shiro:hasPermission name="fZKo6sJb">
             <a class="layui-btn layui-btn-xs coin_add" lay-event="coin_add"><i class="layui-icon larry-icon larry-bianji2"></i>添加金币</a>
+        </shiro:hasPermission>
+        <shiro:hasPermission name="42wUOYef">
+            <a class="layui-btn layui-btn-xs update_user" lay-event="update_user"><i class="layui-icon larry-icon larry-bianji2"></i>修改密码</a>
         </shiro:hasPermission>
          <shiro:hasPermission name="uG9vazWK">
             <a class="layui-btn layui-btn-xs mineral_add" lay-event="mineral_add"><i class="layui-icon larry-icon larry-bianji2"></i>添加矿石</a>

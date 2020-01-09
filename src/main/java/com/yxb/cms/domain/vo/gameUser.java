@@ -7,6 +7,9 @@ import com.yxb.cms.domain.dto.PageDto;
 public class gameUser extends PageDto implements Serializable {
     private static final long serialVersionUID = 1L;
 	private Integer id;
+	private String acc;
+	private String pwd;
+	private String extractPwd;
 	private String nick;
 	private String phone;
 	private String email;
@@ -18,6 +21,24 @@ public class gameUser extends PageDto implements Serializable {
 	}
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	public String getAcc() {
+		return acc;
+	}
+	public void setAcc(String acc) {
+		this.acc = acc;
+	}
+	public String getPwd() {
+		return pwd;
+	}
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
+	}
+	public String getExtractPwd() {
+		return extractPwd;
+	}
+	public void setExtractPwd(String extractPwd) {
+		this.extractPwd = extractPwd;
 	}
 	public String getNick() {
 		return nick;

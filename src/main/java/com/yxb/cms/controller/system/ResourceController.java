@@ -166,6 +166,19 @@ public class ResourceController extends BasicController {
         }
     }
 
+    @RequestMapping("/ajax_res_fail.do")
+    @ResponseBody
+    public BussinessMsg ajaxFailResource(Integer resId){
+        try {
+        	Resource res=new Resource();
+        	res.setResId(resId);
+        	res.setResStatus(1);
+            return resourceService.saveOrUpdateResource(res, this.getCurrentLoginName() );
+        } catch (Exception e) {
+            log.error("保存用户信息方法内部错误",e);
+            return BussinessMsgUtil.returnCodeMessage(BussinessCode.RES_SAVE_ERROR);
+        }
+    }
 
     @RequestMapping("/ajax_res_menu_top.do")
     @ResponseBody

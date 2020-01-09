@@ -151,7 +151,15 @@
                 common.cmsLayOpen('编辑菜单',url,'750px','470px');
             //失效菜单
             }else if(layEvent === 'res_fail'){
-
+            	 var resId = data.resId;
+                 var resStatus = data.resStatus;
+                
+                 var url = "${ctx}/res/ajax_res_fail.do";
+                 var param = {resId:resId};
+                 common.ajaxCmsConfirm('系统提示', '失效角色、解除角色、用户、菜单绑定关系?',url,param);
+            	
+            	
+            	
             }
 
 

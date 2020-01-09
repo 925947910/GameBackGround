@@ -31,6 +31,13 @@
     </div>
     </div>
         <div class="layui-form-item">
+        <label class="layui-form-label">密码</label>
+        <div class="layui-input-block">
+            <input type="text" class="layui-input" name="pwd"  maxlength="20" value="" placeholder="请输入密码">
+        </div>
+    </div>
+    </div>
+        <div class="layui-form-item">
         <label class="layui-form-label">电话号码</label>
         <div class="layui-input-block">
             <input type="text" class="layui-input" name="phone"  maxlength="20" value="" placeholder="请输入电话号码">

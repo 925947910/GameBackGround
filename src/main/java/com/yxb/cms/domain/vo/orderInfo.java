@@ -11,6 +11,8 @@ public class orderInfo  extends PageDto implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	private Integer id;
+	private String accountOut;
+	private String accountIn;
 	private String orderLocal;
 	private String orderRemote;
 	private Integer plat;
@@ -26,6 +28,18 @@ public class orderInfo  extends PageDto implements Serializable{
 	}
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	public String getAccountOut() {
+		return accountOut;
+	}
+	public void setAccountOut(String accountOut) {
+		this.accountOut = accountOut;
+	}
+	public String getAccountIn() {
+		return accountIn;
+	}
+	public void setAccountIn(String accountIn) {
+		this.accountIn = accountIn;
 	}
 	public String getOrderLocal() {
 		return orderLocal;

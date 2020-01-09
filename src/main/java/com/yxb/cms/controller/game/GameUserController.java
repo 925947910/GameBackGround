@@ -83,9 +83,10 @@ public class GameUserController extends BasicController {
         switch (act) {
 		case "coin":
 			 return "game/coin_edit";
-
-		default:
+		case "mineral":
 			 return "game/mineral_edit";
+		default:
+			 return "game/pwd_edit";
 		}
        
     }
@@ -102,6 +103,22 @@ public class GameUserController extends BasicController {
     	
        
     }
+    @RequestMapping("/ajax_update_pwd.do")
+    @ResponseBody
+    public BussinessMsg ajaxUpdatePwd(Integer userId,String pwd, String extractPwd){
+    	   try {
+    		   return GameUserService.updatePwd(userId,pwd,extractPwd);
+           } catch (Exception e) {
+               log.error("",e);
+               return BussinessMsgUtil.returnCodeMessage(BussinessCode.UPDATE_PWD_FAILED);
+           }
+    	
+    	
+       
+    }
+    
+    
+    
     @RequestMapping("/gameUser_add.do")
     public String toGameUserAddPage(Model model) {
         //新增页面标识
@@ -110,8 +127,8 @@ public class GameUserController extends BasicController {
     }
     @RequestMapping("/ajax_save_gameUser.do")
 	@ResponseBody
-	public BussinessMsg saveGameUser(String acc,String nick,String phone) throws Exception {
-		if(GameUserService.saveGameUser(acc,nick, phone)) {
+	public BussinessMsg saveGameUser(String acc,String nick,String pwd,String phone) throws Exception {
+		if(GameUserService.saveGameUser(acc,pwd,nick, phone)) {
 			return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
 		}else {
 			return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_ERROR);
@@ -119,6 +136,6 @@ public class GameUserController extends BasicController {
 		
 		
 	}
-    
+
 
 }
