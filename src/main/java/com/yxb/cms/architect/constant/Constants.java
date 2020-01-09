@@ -53,8 +53,8 @@ public class Constants {
     public static final String REDIS_KEY_ECHARTS_USER_PV = "user_pv_key";
     
     /**echarts图表用户访问量*/
-    public static final int REDIS_KEY_ECHARTS_USER_PV_DB = 7;
-    public static final int REDIS_DB0 = 10;
-    public static final int REDIS_DB4 = 14;
+    public static final int REDIS_KEY_ECHARTS_USER_PV_DB = 6;
+    public static final int REDIS_DB0 = 0;
+    public static final int REDIS_DB4 = 4;
     
 }
