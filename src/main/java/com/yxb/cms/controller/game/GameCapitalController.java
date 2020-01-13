@@ -36,8 +36,11 @@ package com.yxb.cms.controller.game;
 
 import com.yxb.cms.architect.constant.BussinessCode;
 import com.yxb.cms.architect.utils.BussinessMsgUtil;
+import com.yxb.cms.architect.utils.CommonHelper;
 import com.yxb.cms.controller.BasicController;
 import com.yxb.cms.domain.bo.BussinessMsg;
+import com.yxb.cms.domain.bo.ExcelExport;
+import com.yxb.cms.domain.vo.User;
 import com.yxb.cms.domain.vo.billsInfo;
 import com.yxb.cms.domain.vo.freezeInfo;
 import com.yxb.cms.domain.vo.gameRec;
@@ -54,6 +57,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 
 
@@ -175,6 +179,11 @@ public class GameCapitalController extends BasicController {
 		
 		
 	}
-
+	 @RequestMapping("/excel_orders_export.do")
+	    public ModelAndView excelUsersExport(orderInfo orderInfo){
+	        ExcelExport excelExport = GameCapitalService.excelExportOrderList(orderInfo);
+	        return CommonHelper.getExcelModelAndView(excelExport);
+	    }
+	
 
 }

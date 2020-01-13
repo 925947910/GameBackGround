@@ -64,6 +64,7 @@ public interface OrderMapper {
      * @param user 用户实体
      * @return
      */
+    List<orderInfo> selectOrderInfoList(orderInfo orderInfo);
     List<orderInfo> selectOrderInfoListByPage(orderInfo orderInfo);
     List<orderInfo> OrderInfoById(int id);
     int reviewOrder(@Param("id")int id,@Param("status")int status);

@@ -46,6 +46,8 @@ import com.yxb.cms.dao.GameRecMapper;
 import com.yxb.cms.dao.GameUserMapper;
 import com.yxb.cms.dao.OrderMapper;
 import com.yxb.cms.domain.bo.BussinessMsg;
+import com.yxb.cms.domain.bo.ExcelExport;
+import com.yxb.cms.domain.vo.User;
 import com.yxb.cms.domain.vo.billsInfo;
 import com.yxb.cms.domain.vo.freezeInfo;
 import com.yxb.cms.domain.vo.gameRec;
@@ -166,5 +168,21 @@ public class GameCapitalService {
 		GameUserService.writeBill(order.getUid(),order.getCoin(), newCoin, GameUserService.EVENT_COIN_GM_CHARGE, orderId,"审核拒绝返还金币","","");
 		OrderMapper.reviewOrder(orderId, 4);
         return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
+    }
+    public ExcelExport excelExportOrderList(orderInfo orderInfo){
+        ExcelExport excelExport = new ExcelExport();
+        List<orderInfo> orderInfoList = OrderMapper.selectOrderInfoList(orderInfo);
+   
+        excelExport.addColumnInfo("订单ID","id");
+        excelExport.addColumnInfo("玩家ID","uid");
+        excelExport.addColumnInfo("账号","accountOut");
+        excelExport.addColumnInfo("昵称","accountIn");
+        excelExport.addColumnInfo("金币","coin");
+        excelExport.addColumnInfo("订单类型","orderType");
+        excelExport.addColumnInfo("订单状态","status");
+        excelExport.addColumnInfo("时间","time");
+
+        excelExport.setDataList(orderInfoList);
+        return excelExport;
     }
 }

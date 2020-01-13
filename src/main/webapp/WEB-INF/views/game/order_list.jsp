@@ -32,26 +32,32 @@
 								<select name="searchTerm">
 									<option value="uidTerm">玩家ID</option>
 									<option value="idTerm">订单ID</option>
-									<option  value="orderNoTerm">订单号</option>
+									<option value="orderNoTerm">订单号</option>
 								</select>
 							</div>
 							<div class="layui-input-inline" style="width: 145px;">
 								<input type="text" name="searchContent" value=""
 									placeholder="请输入关键字" class="layui-input search_input">
 							</div>
-							<a class="layui-btn orderSearchList_btn" lay-submit lay-filter="orderSearchFilter"><i class="layui-icon larry-icon larry-chaxun7"></i>查询</a>
+							<a class="layui-btn orderSearchList_btn" lay-submit
+								lay-filter="orderSearchFilter"><i
+								class="layui-icon larry-icon larry-chaxun7"></i>查询</a>
 						</form>
 					</div>
+					<shiro:hasPermission name="0jOfTHGx">
+						<div class="layui-inline">
+							<a class="layui-btn layui-btn-normal excelExport_btn"
+								style="background-color: #5FB878"> <i
+								class="layui-icon larry-icon larry-danye"></i>导出
+							</a>
+						</div>
+					</shiro:hasPermission>
 					<!--      <shiro:hasPermission name="0rbT8t2P">
                     <div class="layui-inline">
                         <a class="layui-btn layui-btn-normal userAdd_btn"> <i class="layui-icon larry-icon larry-xinzeng1"></i>新增用户</a>
                     </div>
                 </shiro:hasPermission>
-                <shiro:hasPermission name="0jOfTHGx">
-                    <div class="layui-inline">
-                        <a class="layui-btn layui-btn-normal excelUserExport_btn"  style="background-color:#5FB878"> <i class="layui-icon larry-icon larry-danye"></i>导出</a>
-                    </div>
-                </shiro:hasPermission>
+               
                 
                 <shiro:hasPermission name="lBE3hz5c">
                     <div class="layui-inline">
@@ -134,7 +140,12 @@
             });
 
         });
-
+        /**导出用户信息*/
+        $(".excelExport_btn").click(function(){
+            var url = '${ctx}/gameCapital/excel_orders_export.do';
+            $("#orderSearchForm").attr("action",url);
+            $("#orderSearchForm").submit();
+        });
         /**监听工具条*/
         table.on('tool(orderTableId)', function(obj){
             var data = obj.data; //获得当前行数据
@@ -156,10 +167,11 @@
 
     });
 </script>
-<script type="text/html" id="coinTpl">
+	<script type="text/html" id="coinTpl">
    {{d.coin/100}}
-</script>>
-<script type="text/html" id="orderTypeTpl">
+</script>
+	>
+	<script type="text/html" id="orderTypeTpl">
     {{# if(d.orderType == 1){ }}
                                           充值订单
     {{# } else if(d.orderType == 2){ }}
@@ -168,7 +180,7 @@
     {{d.orderType}}
     {{# }  }}
 </script>
-<script type="text/html" id="statusTpl">
+	<script type="text/html" id="statusTpl">
     {{# if(d.status == 0){ }}
                                     初始订单                               
     {{# } else if(d.status == 1){ }}
@@ -183,7 +195,7 @@
     {{d.status}}
     {{# }  }}
 </script>
-</script>
+	</script>
 	<!--工具条 -->
 	<script type="text/html" id="orderBar">
     <div class="layui-btn-group">
@@ -197,7 +209,7 @@
         </shiro:hasPermission>
     </div>
 </script>
-	
+
 
 
 </body>

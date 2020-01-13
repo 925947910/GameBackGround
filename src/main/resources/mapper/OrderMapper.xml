@@ -39,7 +39,13 @@
 		order by time DESC
 		LIMIT #{start},#{limit}
 	</select>
-
+	<!-- 用户列表信息分页显示 -->
+	<select id="selectOrderInfoList"
+		parameterType="com.yxb.cms.domain.vo.orderInfo"
+		resultMap="BaseResultMap">
+		select * from tradeOrder
+		<include refid="selectPageParmas" />
+	</select>
 
 	<!-- 查询条件 -->
 	<sql id="selectPageParmas">

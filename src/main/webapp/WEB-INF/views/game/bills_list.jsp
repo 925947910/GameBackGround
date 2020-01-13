@@ -172,6 +172,8 @@
                                     游戏交易
     {{# } else if(d.type == 10){ }}
                                     游戏挖矿
+    {{# } else if(d.type == 11){ }}
+                                     提现金币
     {{# } else if(d.type == 12){ }}
                                    后台修改
     {{# } else { }}

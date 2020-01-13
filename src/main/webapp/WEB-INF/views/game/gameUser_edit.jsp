@@ -72,13 +72,13 @@
                 success : function(data) {
                     if(data.returnCode == 0000){
                         top.layer.close(gameUserSaveLoading);
-                        common.cmsLaySucMsg("添加成功！还需添加:"+data.returnData+"个")
+                        common.cmsLaySucMsg("添加成功")
                         var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                         parent.layer.close(index); //再执行关闭                        //刷新父页面
                         parent.location.reload();
                     }else{
                         top.layer.close(gameUserSaveLoading);
-                        common.cmsLayErrorMsg(data.returnMessage);
+                        common.cmsLayErrorMsg(data.returnData);
                     }
                 },error:function(data){
                     top.layer.close(index);
