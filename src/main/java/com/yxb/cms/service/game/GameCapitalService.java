@@ -145,13 +145,18 @@ public class GameCapitalService {
     }
     @Transactional
     public BussinessMsg   ReviewSucc(int orderId)throws Exception{
-    	OrderMapper.reviewOrder(orderId, 3);
+    	if(OrderMapper.reviewOrder(orderId, 3)!=1) {
+    		throw new RuntimeException("订单已审核");
+    	}
         return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
     }
     @Transactional
     public BussinessMsg   ReviewFailed(int orderId)throws Exception{
     	List<orderInfo> orders=OrderMapper.OrderInfoById(orderId);
     	orderInfo order=orders.get(0);
+    	if(OrderMapper.reviewOrder(orderId, 4)!=1) {
+    		throw new RuntimeException("订单已审核");
+    	}
     	List<gameUser> DBUsers=GameUserMapper.checkCoin(order.getUid());
 		gameUser DBUser=DBUsers.get(0);
 		int version = DBUser.getVersion();
@@ -164,7 +169,7 @@ public class GameCapitalService {
 			throw new RuntimeException("修改金币失败");
 		}
 		GameUserService.writeBill(order.getUid(),order.getCoin(), newCoin, GameUserService.EVENT_COIN_GM_CHARGE, orderId,"审核拒绝返还金币","","");
-		OrderMapper.reviewOrder(orderId, 4);
+		
         return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
     }
 }
