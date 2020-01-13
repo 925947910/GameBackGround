@@ -74,35 +74,35 @@ import java.util.*;
 @Service
 public class GameUserService {
 	public static final int   EVENT_COIN_GM_CHARGE=12; // 后台金币修改	
-    private Logger log = LogManager.getLogger(GameUserService.class);
-    @Autowired
-    private RedisClient redisClient;
-    @Autowired
-    private GameUserMapper GameUserMapper;
-    @Autowired
-    private BillsMapper BillsMapper;
+	private Logger log = LogManager.getLogger(GameUserService.class);
+	@Autowired
+	private RedisClient redisClient;
+	@Autowired
+	private GameUserMapper GameUserMapper;
+	@Autowired
+	private BillsMapper BillsMapper;
 
 
-    /**
-     * 用户信息分页显示
-     * @param user 用户实体
-     * @return
-     */
-    public String selectUserResultPageList(gameUser user){
-        List<gameUser> userList = GameUserMapper.selectUserListByPage(user);
-        Long count = GameUserMapper.selectCountUser(user);
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("code",0);
-        map.put("msg","");
-        map.put("count",count);
-        map.put("data", userList);
-        return Json.toJson(map);
-    }
+	/**
+	 * 用户信息分页显示
+	 * @param user 用户实体
+	 * @return
+	 */
+	public String selectUserResultPageList(gameUser user){
+		List<gameUser> userList = GameUserMapper.selectUserListByPage(user);
+		Long count = GameUserMapper.selectCountUser(user);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("code",0);
+		map.put("msg","");
+		map.put("count",count);
+		map.put("data", userList);
+		return Json.toJson(map);
+	}
 
-    @Transactional
-    @SystemServiceLog(description="添加玩家金币Service")
-    public BussinessMsg   addCoin(Integer userId,Integer coin,Integer tagId,String desc)throws Exception{
-    	List<gameUser> DBUsers=GameUserMapper.checkCoin(userId);
+	@Transactional
+	@SystemServiceLog(description="添加玩家金币Service")
+	public BussinessMsg   addCoin(Integer userId,Integer coin,Integer tagId,String desc)throws Exception{
+		List<gameUser> DBUsers=GameUserMapper.checkCoin(userId);
 		gameUser DBUser=DBUsers.get(0);
 		int version = DBUser.getVersion();
 		int oldCoin = DBUser.getCoin();
@@ -114,16 +114,16 @@ public class GameUserService {
 			throw new RuntimeException("修改金币失败");
 		}
 		writeBill(userId,coin, newCoin, EVENT_COIN_GM_CHARGE, tagId,desc,"","");
-        return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
-    }
-    @Transactional
-    @SystemServiceLog(description="修改玩家密码Service")
-    public BussinessMsg   updatePwd(Integer userId,String pwd,String extractPwd)throws Exception{
-    	if(GameUserMapper.updatePwd(userId, pwd, extractPwd)!=1) {
+		return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
+	}
+	@Transactional
+	@SystemServiceLog(description="修改玩家密码Service")
+	public BussinessMsg   updatePwd(Integer userId,String pwd,String extractPwd)throws Exception{
+		if(GameUserMapper.updatePwd(userId, pwd, extractPwd)!=1) {
 			throw new RuntimeException("修改玩家密码失败");
 		}
-        return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
-    }
+		return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
+	}
 	public  void writeBill(int Uid,int Cost ,int Remain, int Type, int TagId,String Reason,String accountOut,String accountIn) throws Exception {	
 		redisClient.hset(Constants.REDIS_DB0, "user:"+Uid,"coin",Remain+"");
 		String nick=redisClient.hget(Constants.REDIS_DB0, "user:"+Uid,"nick");
@@ -141,12 +141,12 @@ public class GameUserService {
 		BillsMapper.writeBills(bills);
 	}
 
-	public boolean saveGameUser(String acc,String pwd, String nick, String phone) {
+	public String saveGameUser(String acc,String pwd, String nick, String phone) {
 		try {
 			HttpClientUtil client=HttpClientUtil.getInstance();
 			Map<String,Object> dataMap=new  HashMap<String, Object>(); 
 			Map<String,String>  param=new  HashMap<String, String>(); 
-			
+
 			dataMap.put("token", "");
 			dataMap.put("acc", acc);
 			dataMap.put("pwd", pwd);
@@ -157,14 +157,13 @@ public class GameUserService {
 			param.put("param",paramStr);
 			String uri=redisClient.hget(Constants.REDIS_DB4,RedisKeys._GAME_INTERFACE_URI,RedisKeys._GAME_REGIST);
 			String JsonAuth=client.doPostWithJsonResult(uri, param);
-			JSONObject AuthData=JSON.parseObject(JsonAuth);
 			System.out.println(JsonAuth);
-			int resultCode=AuthData.getIntValue("status");
-			return true;
+			return JsonAuth;
 		} catch (Exception e) {
 			log.error("",e);
-			return false;
-		}	}
+			return "";
+		}	
+	}
 
 
 }

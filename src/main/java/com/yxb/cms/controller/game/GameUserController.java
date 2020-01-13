@@ -33,6 +33,8 @@
 package com.yxb.cms.controller.game;
 
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.yxb.cms.architect.constant.BussinessCode;
 import com.yxb.cms.architect.utils.BussinessMsgUtil;
 import com.yxb.cms.controller.BasicController;
@@ -128,13 +130,14 @@ public class GameUserController extends BasicController {
     @RequestMapping("/ajax_save_gameUser.do")
 	@ResponseBody
 	public BussinessMsg saveGameUser(String acc,String nick,String pwd,String phone) throws Exception {
-		if(GameUserService.saveGameUser(acc,pwd,nick, phone)) {
+    	String JsonAuth=GameUserService.saveGameUser(acc,pwd,nick, phone);
+    	JSONObject AuthData=JSON.parseObject(JsonAuth);
+		int resultCode=AuthData.getIntValue("status");
+    	if(resultCode==200) {
 			return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
 		}else {
-			return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_ERROR);
+			return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_ERROR,JsonAuth);
 		}
-		
-		
 	}
 
 
