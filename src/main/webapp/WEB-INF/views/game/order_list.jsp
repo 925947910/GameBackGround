@@ -33,6 +33,7 @@
 									<option value="uidTerm">玩家ID</option>
 									<option value="idTerm">订单ID</option>
 									<option  value="orderNoTerm">订单号</option>
+									<option  value="orderTypeTerm">订单类型</option>
 								</select>
 							</div>
 							<div class="layui-input-inline" style="width: 145px;">
@@ -98,6 +99,8 @@
                 {field:'uid', title: '玩家ID',align:'center'},
                 {field:'accountOut', title: '账号',align:'center'},
                 {field:'accountIn', title: '昵称',align:'center'},
+                {field:'orderRemote', title: '订单号',align:'center'},
+                {field:'currency', title: '钱包地址',align:'center'},
                 {field:'coin', title: '金币',align:'center',templet: '#coinTpl'},
                 {field:'orderType', title: '订单类型',align:'center',templet: '#orderTypeTpl'},
                 {field:'status', title: '订单状态',align:'center',templet: '#statusTpl'},
