@@ -33,6 +33,8 @@
 package com.yxb.cms.handler;
 
 
+import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import redis.clients.jedis.Jedis;
@@ -95,6 +97,22 @@ public class RedisClient {
         }
 
     }
+    public Map<String,String> hgetAll(int db,String key) {
+
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            jedis.select(db);
+            return jedis.hgetAll(key);
+        } catch (Exception e){
+            log.error(e.getMessage(),e);
+            throw e;
+        }finally {
+            jedis.close();
+        }
+
+    }
+    
     public String hget(int db,String key,String field) {
 
         Jedis jedis = null;

@@ -72,6 +72,18 @@ public class UserController extends BasicController {
      *跳转到用户列表页面
      * @return
      */
+    
+    @RequestMapping("/agent_info.do")
+    public String toAgentInfoPage() {
+        return "game/agent_info";
+    }
+    @RequestMapping("/ajax_agent_info.do")
+    @ResponseBody
+    public String ajaxAgentInfo(User user){
+    	user.setSearchTerm("userLoginNameTerm");
+    	user.setSearchContent(this.getCurrentLoginName());
+        return userService.selectUserResultPageList(user);
+    }
     @RequestMapping("/user_list.do")
     public String toUserListPage() {
         return "system/user_list";

@@ -61,6 +61,14 @@ public class PageDto {
      */
     protected String searchContent;
     /**
+     * 查询项
+     */
+    protected String searchTerm1;
+    /**
+     * 查询内容
+     */
+    protected String searchContent1;
+    /**
      * 开始时间
      */
     protected String beginStr;
@@ -127,6 +135,18 @@ public class PageDto {
 		this.searchContent = searchContent;
 	}
 	
+	public String getSearchTerm1() {
+		return searchTerm1;
+	}
+	public void setSearchTerm1(String searchTerm1) {
+		this.searchTerm1 = searchTerm1;
+	}
+	public String getSearchContent1() {
+		return searchContent1;
+	}
+	public void setSearchContent1(String searchContent1) {
+		this.searchContent1 = searchContent1;
+	}
 	public String getBeginStr() {
 		return beginStr;
 	}

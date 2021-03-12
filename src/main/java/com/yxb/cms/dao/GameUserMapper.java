@@ -68,6 +68,6 @@ public interface GameUserMapper {
 
     List<gameUser> checkCoin(int id);
     int  coinChange(@Param("id")int id,@Param("coin")int coin, @Param("version")int version);
-    int  updatePwd(@Param("id")int id,@Param("pwd")String pwd, @Param("extractPwd")String extractPwd);
-    
+    int  updatePwd(@Param("id")int id,@Param("pwd")String pwd);
+    int  userFreeze(@Param("id")int id,@Param("freeze")int freeze);
 }

@@ -17,7 +17,8 @@ public class orderInfo  extends PageDto implements Serializable{
 	private String orderRemote;
 	private Integer plat;
 	private Integer uid;
-	private Double cost;
+	private Integer agentId;
+	private float cost;
 	private String  currency;
 	private Integer coin;
 	private Integer  orderType;
@@ -65,10 +66,16 @@ public class orderInfo  extends PageDto implements Serializable{
 	public void setUid(Integer uid) {
 		this.uid = uid;
 	}
-	public Double getCost() {
+	public Integer getAgentId() {
+		return agentId;
+	}
+	public void setAgentId(Integer agentId) {
+		this.agentId = agentId;
+	}
+	public float getCost() {
 		return cost;
 	}
-	public void setCost(Double cost) {
+	public void setCost(float cost) {
 		this.cost = cost;
 	}
 	public String getCurrency() {

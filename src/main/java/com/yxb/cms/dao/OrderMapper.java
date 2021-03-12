@@ -64,9 +64,9 @@ public interface OrderMapper {
      * @param user 用户实体
      * @return
      */
+    Float orderSumOfCost(orderInfo orderInfo);
     List<orderInfo> selectOrderInfoListByPage(orderInfo orderInfo);
     List<orderInfo> OrderInfoById(int id);
-    int reviewOrder(@Param("id")int id,@Param("status")int status);
     
     
 }

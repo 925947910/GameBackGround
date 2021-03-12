@@ -99,6 +99,24 @@ public class GameUserService {
         return Json.toJson(map);
     }
 
+    
+
+    @Transactional
+    @SystemServiceLog(description="修改玩家密码Service")
+    public BussinessMsg   updatePwd(Integer userId,String pwd)throws Exception{
+    	if(GameUserMapper.updatePwd(userId, pwd)!=1) {
+			throw new RuntimeException("修改玩家密码失败");
+		}
+        return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
+    }
+    @Transactional
+    @SystemServiceLog(description="修改玩家密码Service")
+    public BussinessMsg   userFreeze(Integer userId,int freeze)throws Exception{
+    	if(GameUserMapper.userFreeze(userId, freeze)!=1) {
+			throw new RuntimeException("解冻冻结 ");
+		}
+        return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
+    }
     @Transactional
     @SystemServiceLog(description="添加玩家金币Service")
     public BussinessMsg   addCoin(Integer userId,Integer coin,Integer tagId,String desc)throws Exception{
@@ -107,28 +125,23 @@ public class GameUserService {
 		int version = DBUser.getVersion();
 		int oldCoin = DBUser.getCoin();
 		int newCoin = oldCoin+coin;
+		if(DBUser.getIsTourist()!=1) {
+			throw new RuntimeException("非内部玩家不可添加");
+		}
 		if(newCoin<0) {
 			throw new RuntimeException("金币不能为负");
 		}
 		if(GameUserMapper.coinChange(userId, newCoin, version)!=1) {
 			throw new RuntimeException("修改金币失败");
 		}
-		writeBill(userId,coin, newCoin, EVENT_COIN_GM_CHARGE, tagId,desc,"","");
+		writeBill(userId,DBUser.getAgentId(),DBUser.getNick(),coin, newCoin, EVENT_COIN_GM_CHARGE, tagId,desc,"","");
         return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
     }
-    @Transactional
-    @SystemServiceLog(description="修改玩家密码Service")
-    public BussinessMsg   updatePwd(Integer userId,String pwd,String extractPwd)throws Exception{
-    	if(GameUserMapper.updatePwd(userId, pwd, extractPwd)!=1) {
-			throw new RuntimeException("修改玩家密码失败");
-		}
-        return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
-    }
-	public  void writeBill(int Uid,int Cost ,int Remain, int Type, int TagId,String Reason,String accountOut,String accountIn) throws Exception {	
+	public  void writeBill(int Uid,int agentId,String nick,int Cost ,int Remain, int Type, int TagId,String Reason,String accountOut,String accountIn)  throws Exception{	
 		redisClient.hset(Constants.REDIS_DB0, "user:"+Uid,"coin",Remain+"");
-		String nick=redisClient.hget(Constants.REDIS_DB0, "user:"+Uid,"nick");
 		bills  bills= new  bills();
 		bills.setUid(Uid);
+		bills.setAgentId(agentId);
 		bills.setNick(nick);
 		bills.setRemain(Remain);
 		bills.setCost(Cost);
@@ -138,7 +151,7 @@ public class GameUserService {
 		bills.setAccountIn(accountIn);
 		bills.setReason(Reason);
 		bills.setTime(new Date().getTime()/1000);
-		BillsMapper.writeBills(bills);
+	    BillsMapper.writeBills(bills);
 	}
 
 	public boolean saveGameUser(String acc,String pwd, String nick, String phone) {

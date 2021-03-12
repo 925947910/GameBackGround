@@ -6,16 +6,22 @@ import com.yxb.cms.domain.dto.PageDto;
 
 public class gameUser extends PageDto implements Serializable {
     private static final long serialVersionUID = 1L;
-	private Integer id;
-	private String acc;
-	private String pwd;
-	private String extractPwd;
-	private String nick;
-	private String phone;
-	private String email;
-	private Integer coin;
-	private Integer mineral;
-	private Integer  version;
+	private  Integer    id;
+	private  String acc;
+	private  String pwd;
+	private  Integer    plat;
+	private  String phone="";
+	private  String nick="";
+	private  Integer    sex;
+	private  String photo="";
+	private  Integer    freezed;
+	private  Integer    isTourist;
+	private  Integer    isLeader;
+	private  Integer    coin;
+	private  Integer    agentId;
+	private  Integer    presenterId;
+	private  Long   regTime;
+	private  Integer    version;
 	public Integer getId() {
 		return id;
 	}
@@ -34,17 +40,11 @@ public class gameUser extends PageDto implements Serializable {
 	public void setPwd(String pwd) {
 		this.pwd = pwd;
 	}
-	public String getExtractPwd() {
-		return extractPwd;
+	public Integer getPlat() {
+		return plat;
 	}
-	public void setExtractPwd(String extractPwd) {
-		this.extractPwd = extractPwd;
-	}
-	public String getNick() {
-		return nick;
-	}
-	public void setNick(String nick) {
-		this.nick = nick;
+	public void setPlat(Integer plat) {
+		this.plat = plat;
 	}
 	public String getPhone() {
 		return phone;
@@ -52,24 +52,65 @@ public class gameUser extends PageDto implements Serializable {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	public String getEmail() {
-		return email;
+	public String getNick() {
+		return nick;
 	}
-	public void setEmail(String email) {
-		this.email = email;
+	public void setNick(String nick) {
+		this.nick = nick;
 	}
-
+	public Integer getSex() {
+		return sex;
+	}
+	public void setSex(Integer sex) {
+		this.sex = sex;
+	}
+	public String getPhoto() {
+		return photo;
+	}
+	public void setPhoto(String photo) {
+		this.photo = photo;
+	}
+	public Integer getFreezed() {
+		return freezed;
+	}
+	public void setFreezed(Integer freezed) {
+		this.freezed = freezed;
+	}
+	public Integer getIsTourist() {
+		return isTourist;
+	}
+	public void setIsTourist(Integer isTourist) {
+		this.isTourist = isTourist;
+	}
+	public Integer getIsLeader() {
+		return isLeader;
+	}
+	public void setIsLeader(Integer isLeader) {
+		this.isLeader = isLeader;
+	}
 	public Integer getCoin() {
 		return coin;
 	}
 	public void setCoin(Integer coin) {
 		this.coin = coin;
 	}
-	public Integer getMineral() {
-		return mineral;
+	public Integer getAgentId() {
+		return agentId;
 	}
-	public void setMineral(Integer mineral) {
-		this.mineral = mineral;
+	public void setAgentId(Integer agentId) {
+		this.agentId = agentId;
+	}
+	public Integer getPresenterId() {
+		return presenterId;
+	}
+	public void setPresenterId(Integer presenterId) {
+		this.presenterId = presenterId;
+	}
+	public Long getRegTime() {
+		return regTime;
+	}
+	public void setRegTime(Long regTime) {
+		this.regTime = regTime;
 	}
 	public Integer getVersion() {
 		return version;
@@ -77,5 +118,7 @@ public class gameUser extends PageDto implements Serializable {
 	public void setVersion(Integer version) {
 		this.version = version;
 	}
+
+	
 
 }

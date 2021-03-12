@@ -37,6 +37,18 @@
             <input type="text" class="layui-input" name="userName" lay-verify="required|userName" maxlength="20" value="${user.userName}" placeholder="请输入用户姓名">
         </div>
     </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">电话号码</label>
+        <div class="layui-input-block">
+            <input type="text" class="layui-input" name="phone" lay-verify="required|userPhone" maxlength="20" value="${user.phone}" placeholder="请输入电话号码">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">微信号</label>
+        <div class="layui-input-block">
+            <input type="text" class="layui-input" name="wechat" lay-verify="required|userWeChat" maxlength="20" value="${user.wechat}" placeholder="请输入微信号">
+        </div>
+    </div>
     <div class="layui-form-item" pane>
         <label class="layui-form-label">用户状态</label>
         <div class="layui-input-block">
@@ -81,8 +93,20 @@
             },
             userName: function(value, item){
                 //验证用户名
-                if(!new RegExp("^([\u4e00-\u9fa5]){2,10}$").test(value)){
-                    return '用户姓名只能为中文，长度2-7位';
+              //  if(!new RegExp("^([\u4e00-\u9fa5]){2,10}$").test(value)){
+                //    return '用户姓名只能为中文，长度2-7位';
+                //}
+            },
+            userPhone: function(value, item){
+                //验证用户名
+              if(value==null){
+                    return '电话号码号不能为空';
+                }
+            },
+            userWeChat: function(value, item){
+                //验证用户名
+                if(value==null){
+                    return '微信号不能为空';
                 }
             }
         });

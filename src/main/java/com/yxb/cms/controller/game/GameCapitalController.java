@@ -38,6 +38,7 @@ import com.yxb.cms.architect.constant.BussinessCode;
 import com.yxb.cms.architect.utils.BussinessMsgUtil;
 import com.yxb.cms.controller.BasicController;
 import com.yxb.cms.domain.bo.BussinessMsg;
+import com.yxb.cms.domain.vo.User;
 import com.yxb.cms.domain.vo.billsInfo;
 import com.yxb.cms.domain.vo.freezeInfo;
 import com.yxb.cms.domain.vo.gameRec;
@@ -48,8 +49,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -109,6 +112,13 @@ public class GameCapitalController extends BasicController {
 	@RequestMapping("/ajax_bills_list.do")
 	@ResponseBody
 	public String ajaxBillsList(billsInfo billsInfo){
+		
+	 User 	user=this.getCurrentUser();
+	if(!user.getUserLoginName().equals("admin")&&!user.getUserLoginName().equals("mng001")){
+		billsInfo.setSearchTerm1("agentIdTerm");
+		billsInfo.setSearchContent1(user.getUserId()+"");
+	}
+		
 		try {
 			if (!StringUtils.isBlank(billsInfo.getBeginStr())) {
 				DateFormat format=	new SimpleDateFormat("yyyy-MM-dd");
@@ -163,8 +173,13 @@ public class GameCapitalController extends BasicController {
 	 */
 	@RequestMapping("/ajax_order_list.do")
 	@ResponseBody
-	public String ajaxOrderList(orderInfo orderInfo){
-		String str=GameCapitalService.selectOrderResultPageList(orderInfo);
+	public String ajaxOrderList(orderInfo orderInfo,HttpServletRequest request){
+		 User 	user=this.getCurrentUser();
+		if(!user.getUserLoginName().equals("admin")&&!user.getUserLoginName().equals("mng001")){
+			orderInfo.setSearchTerm1("agentIdTerm");
+			orderInfo.setSearchContent1(user.getUserId()+"");
+		}
+		String str=GameCapitalService.selectOrderResultPageList(orderInfo, request);
 		return str;
 		
 	}

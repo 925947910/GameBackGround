@@ -44,6 +44,15 @@
 								<input type="text" name="searchContent" value=""
 									placeholder="请输入关键字" class="layui-input search_input">
 							</div>
+							<div class="layui-input-inline" style="width: 110px;">
+								<select name="searchTerm1">
+									<option value="agentIdTerm">代理ID</option>
+								</select>
+							</div>
+							<div class="layui-input-inline" style="width: 145px;">
+								<input type="text" name="searchContent1" value=""
+									placeholder="请输入关键字" class="layui-input search_input">
+							</div>
 							<a class="layui-btn billsSearchList_btn" lay-submit lay-filter="billsSearchFilter"><i class="layui-icon larry-icon larry-chaxun7"></i>查询</a>
 						</form>
 					</div>
@@ -101,10 +110,11 @@
                 {type:"checkbox"},
                 {field:'id', title: 'id',align:'center' },
                 {field:'uid', title: '玩家id',align:'center'},
+                {field:'agentId', title: '代理id',align:'center'},
                 {field:'nick', title: '昵称',align:'center'},
-                {field:'remain', title: '金币剩余',align:'center',templet: '#remainTpl'},
-                {field:'cost', title: '金币变化',align:'center',templet: '#costTpl'},
-                {field:'type', title: '类型',align:'center',templet: '#typeTpl'},
+                {field:'remain', title: '金币剩余',align:'center'},
+                {field:'cost', title: '金币变化',align:'center'},
+                {field:'type', title: '类型',align:'center'},
                 {field:'tagId', title: '来源目标ID',align:'center'},
                 {field:'reason', title: '描述',align:'center'},
                 {field:'time', title: '时间',align:'center',templet:"<div>{{layui.util.toDateString(d.time*1000)}}</div>"}
@@ -127,7 +137,9 @@
                     	    beginStr:data.field.beginStr,
                     	    endStr:data.field.endStr,
                             searchTerm:data.field.searchTerm,
-                            searchContent:data.field.searchContent
+                            searchContent:data.field.searchContent,
+                            searchTerm1:data.field.searchTerm1,
+                            searchContent1:data.field.searchContent1
                     },
                     height: 'full-140',
                     page: true,
@@ -148,11 +160,11 @@
 </script>
 
 <script type="text/html" id="remainTpl">
-   {{d.remain/100}}
+   {{d.remain}}
 </script>
 
 <script type="text/html" id="costTpl">
-   {{d.cost/100}}
+   {{d.cost}}
 </script>
 
 <script type="text/html" id="typeTpl">
@@ -174,6 +186,10 @@
                                     游戏挖矿
     {{# } else if(d.type == 12){ }}
                                    后台修改
+    {{# } else if(d.type == 20){ }}
+                                   红绿球下注
+    {{# } else if(d.type == 22){ }}
+                                   一元购下注
     {{# } else { }}
     {{d.type}}
     {{# }  }}

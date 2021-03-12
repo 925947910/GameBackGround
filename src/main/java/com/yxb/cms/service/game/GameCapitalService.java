@@ -35,8 +35,10 @@ package com.yxb.cms.service.game;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.parser.Feature;
 import com.yxb.cms.architect.annotation.SystemServiceLog;
 import com.yxb.cms.architect.constant.BussinessCode;
+import com.yxb.cms.architect.constant.Constants;
 import com.yxb.cms.architect.constant.RedisKeys;
 import com.yxb.cms.architect.utils.BussinessMsgUtil;
 import com.yxb.cms.architect.utils.HttpClientUtil;
@@ -53,6 +55,7 @@ import com.yxb.cms.domain.vo.gameUser;
 import com.yxb.cms.domain.vo.orderInfo;
 import com.yxb.cms.handler.RedisClient;
 
+import org.apache.http.HttpRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.nutz.json.Json;
@@ -61,6 +64,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -123,53 +128,54 @@ public class GameCapitalService {
         map.put("data", freezeInfoList);
         return Json.toJson(map);
     }
-    public String selectOrderResultPageList(orderInfo orderInfo){
+    public String selectOrderResultPageList(orderInfo orderInfo,HttpServletRequest request){
+    	Float sum=OrderMapper.orderSumOfCost(orderInfo);
+    	//request.setAttribute("sum",sum);
         List<orderInfo> orderInfoList = OrderMapper.selectOrderInfoListByPage(orderInfo);
         Long count = OrderMapper.selectCountOrder(orderInfo);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("code",0);
         map.put("msg","");
         map.put("count",count);
+        map.put("sum", sum);
         map.put("data", orderInfoList);
         return Json.toJson(map);
     }
 
     @SystemServiceLog(description="审核提现Service")
     public BussinessMsg   orderReview(int orderId,int succ)throws Exception{
-    	if(succ==1) {
-    		return ReviewSucc(orderId);
-    	}else {
-    		return ReviewFailed(orderId);
+    	List<orderInfo> orderInfos=OrderMapper.OrderInfoById(orderId);
+    	if(orderInfos.size()!=1) {
+    		throw new RuntimeException("订单不存在");
     	}
+    	if(orderInfos.get(0).getStatus()!=2) {
+    		throw new RuntimeException("订单已审核");
+    	}
+    	if(orderInfos.get(0).getOrderType()!=2) {
+    		throw new RuntimeException("充值订单不予审核");
+    	}
+    	String	JsonAuth;
+    	
+    	   String url=redisClient.hget(Constants.REDIS_DB1,Constants.INTERFACE_URI+0, "verifyOrderUrl");
+    	   Map<String,String> ReqParam=  new HashMap<String, String>();
+    	   JSONObject param= new JSONObject();
+    	   param.put("orderId", orderId);
+    	   param.put("succ", succ);
+    	   ReqParam.put("param", param.toString());
+		try {
+			HttpClientUtil  client=HttpClientUtil.getInstance();
+			
+			JsonAuth=client.doPostWithJsonResult(url, ReqParam);
+		} catch (Exception e) {
+			throw new RuntimeException("请求超时");
+		}
+		if(JsonAuth==null) {
+			throw new RuntimeException("请求数据为空");
+		}
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!JsonAuth:"+JsonAuth);
+        return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
+        
     	
     }
-    @Transactional
-    public BussinessMsg   ReviewSucc(int orderId)throws Exception{
-    	if(OrderMapper.reviewOrder(orderId, 3)!=1) {
-    		throw new RuntimeException("订单已审核");
-    	}
-        return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
-    }
-    @Transactional
-    public BussinessMsg   ReviewFailed(int orderId)throws Exception{
-    	List<orderInfo> orders=OrderMapper.OrderInfoById(orderId);
-    	orderInfo order=orders.get(0);
-    	if(OrderMapper.reviewOrder(orderId, 4)!=1) {
-    		throw new RuntimeException("订单已审核");
-    	}
-    	List<gameUser> DBUsers=GameUserMapper.checkCoin(order.getUid());
-		gameUser DBUser=DBUsers.get(0);
-		int version = DBUser.getVersion();
-		int oldCoin = DBUser.getCoin();
-		int newCoin = oldCoin+order.getCoin();
-		if(newCoin<0) {
-			throw new RuntimeException("金币不能为负");
-		}
-		if(GameUserMapper.coinChange(order.getUid(), newCoin, version)!=1) {
-			throw new RuntimeException("修改金币失败");
-		}
-		GameUserService.writeBill(order.getUid(),order.getCoin(), newCoin, GameUserService.EVENT_COIN_GM_CHARGE, orderId,"审核拒绝返还金币","","");
-		
-        return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
-    }
+   
 }

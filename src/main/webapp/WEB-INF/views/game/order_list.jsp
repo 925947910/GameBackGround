@@ -1,6 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+<%@ page isELIgnored="false" language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@include file="/comm/mytags.jsp"%>
+<%@include file="/comm/mytags.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,18 +28,36 @@
 				<blockquote class="layui-elem-quote mylog-info-tit">
 					<div class="layui-inline">
 						<form class="layui-form" id="orderSearchForm">
+						<div class="layui-input-inline">
+								<label for="begin">开始时间:</label><input name="beginStr" id="beginStr"type="date" /> 
+							</div>
+							<div class="layui-input-inline">
+								<label for="end">结束时间:</label><input name="endStr"id="endStr" type="date" />
+							</div>
 							<div class="layui-input-inline" style="width: 110px;">
 								<select name="searchTerm">
 									<option value="uidTerm">玩家ID</option>
 									<option value="idTerm">订单ID</option>
 									<option  value="orderNoTerm">订单号</option>
 									<option  value="orderTypeTerm">订单类型</option>
+									<option  value="succTerm">成功订单</option>
 								</select>
 							</div>
 							<div class="layui-input-inline" style="width: 145px;">
 								<input type="text" name="searchContent" value=""
 									placeholder="请输入关键字" class="layui-input search_input">
 							</div>
+							
+							<div class="layui-input-inline" style="width: 110px;">
+								<select name="searchTerm1">
+									<option value="agentIdTerm">代理ID</option>
+								</select>
+							</div>
+							<div class="layui-input-inline" style="width: 145px;">
+								<input type="text" name="searchContent1" value=""
+									placeholder="请输入关键字" class="layui-input search_input">
+							</div>
+							
 							<a class="layui-btn orderSearchList_btn" lay-submit lay-filter="orderSearchFilter"><i class="layui-icon larry-icon larry-chaxun7"></i>查询</a>
 						</form>
 					</div>
@@ -62,6 +80,10 @@
  -->
 				</blockquote>
 				<div class="larry-separate"></div>
+				<div class="layui-input-inline">
+								<h2 class="t-center">订单金额汇总:</h2><input id="sum" type="text" />
+							</div>
+							</br>
 				<!-- 用户列表 -->
 				<div class="layui-tab-item layui-show " style="padding: 10px 15px;">
 					<table id="orderTableList" lay-filter="orderTableId"></table>
@@ -97,11 +119,13 @@
                 {type:"checkbox"},
                 {field:'id', title: '订单ID',align:'center' },
                 {field:'uid', title: '玩家ID',align:'center'},
-                {field:'accountOut', title: '账号',align:'center'},
-                {field:'accountIn', title: '昵称',align:'center'},
+                {field:'agentId', title: '代理ID',align:'center'},
+                {field:'accountOut', title: '转出账户',align:'center'},
+                {field:'accountIn', title: '转入账户',align:'center'},
                 {field:'orderRemote', title: '订单号',align:'center'},
-                {field:'currency', title: '钱包地址',align:'center'},
-                {field:'coin', title: '金币',align:'center',templet: '#coinTpl'},
+                {field:'currency', title: '币种',align:'center'},
+                {field:'coin', title: '金币',align:'center'},
+                {field:'cost', title: '转账金额',align:'center'},
                 {field:'orderType', title: '订单类型',align:'center',templet: '#orderTypeTpl'},
                 {field:'status', title: '订单状态',align:'center',templet: '#statusTpl'},
                 {field:'time', title: '时间',align:'center',templet:"<div>{{layui.util.toDateString(d.time*1000)}}</div>"},
@@ -109,9 +133,10 @@
                 ]],
             page: true,
             done: function (res, curr, count) {
+            	 $("#sum").val(res.sum);
                 common.resizeGrid();
                 layer.close(loading);
-
+               
             }
         });
 
@@ -123,11 +148,14 @@
                 table.reload('orderTableId',{
                     where: {
                             searchTerm:data.field.searchTerm,
-                            searchContent:data.field.searchContent
-                    },
+                            searchContent:data.field.searchContent,
+                            searchTerm1:data.field.searchTerm1,
+                            searchContent1:data.field.searchContent1
+                            },
                     height: 'full-140',
                     page: true,
                     done: function (res, curr, count) {
+                    	 $("#sum").val(res.sum);
                         common.resizeGrid();
                         layer.close(loading);
 

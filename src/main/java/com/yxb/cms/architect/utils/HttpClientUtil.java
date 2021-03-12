@@ -179,6 +179,7 @@ public class HttpClientUtil {
             RequestConfig config = RequestConfig.custom().setConnectionRequestTimeout(timeout)
                     .setConnectTimeout(timeout).setSocketTimeout(timeout).build();
             request.setConfig(config);
+            request.setHeader("Content-type", "application/x-www-form-urlencoded;charset=UTF-8");
             List<NameValuePair> params = new ArrayList<NameValuePair>(0);
             if (paramMap != null && !paramMap.isEmpty()) {
                 for (String key : paramMap.keySet()) {
@@ -265,7 +266,6 @@ public class HttpClientUtil {
 		return responseStr;
 
 	}*/
-
     public String doPostWithJsonResult(String uri, String jsonParameters) {
         log.debug("========= Call [{}] Start ==========", uri);
         log.debug("========= Call [{}] Start ==========", jsonParameters);
@@ -273,6 +273,8 @@ public class HttpClientUtil {
         RequestConfig config = RequestConfig.custom().setConnectionRequestTimeout(timeout)
                 .setConnectTimeout(timeout).setSocketTimeout(timeout).build();
         request.setConfig(config);
+        
+        request.setHeader("Content-type", "application/x-www-form-urlencoded;charset=UTF-8");
         request.setEntity(new StringEntity(jsonParameters, ContentType.APPLICATION_JSON));
         HttpResponse response = null;
         String responseStr = null;
@@ -288,6 +290,7 @@ public class HttpClientUtil {
         return responseStr;
 
     }
+    
 
     public String doPost(String url, String jsonStr) {
         log.debug("========= Call [{}] Start ==========", url);

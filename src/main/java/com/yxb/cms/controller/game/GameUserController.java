@@ -73,8 +73,14 @@ public class GameUserController extends BasicController {
      */
     @RequestMapping("/ajax_user_list.do")
     @ResponseBody
-    public String ajaxUserList(gameUser user){
-        return GameUserService.selectUserResultPageList(user);
+    public String ajaxUserList(gameUser gameUser){
+    	 User 	user=this.getCurrentUser();
+    	if(!user.getUserLoginName().equals("admin")&&!user.getUserLoginName().equals("mng001")){
+    		gameUser.setSearchTerm1("agentIdTerm");
+    		gameUser.setSearchContent1(user.getUserId()+"");
+    	}
+    	
+        return GameUserService.selectUserResultPageList(gameUser);
     }
 
     @RequestMapping("/user_update.do")
@@ -83,8 +89,8 @@ public class GameUserController extends BasicController {
         switch (act) {
 		case "coin":
 			 return "game/coin_edit";
-		case "mineral":
-			 return "game/mineral_edit";
+		case "freeze":
+			 return "game/freeze_edit";
 		default:
 			 return "game/pwd_edit";
 		}
@@ -94,7 +100,7 @@ public class GameUserController extends BasicController {
     @ResponseBody
     public BussinessMsg ajaxAddCoin(Integer userId,Integer coin,Integer tagId,String desc){
     	   try {
-    		   return GameUserService.addCoin(userId,coin*100,tagId, desc);
+    		   return GameUserService.addCoin(userId,coin,tagId, desc);
            } catch (Exception e) {
                log.error("添加玩家金币内部错误",e);
                return BussinessMsgUtil.returnCodeMessage(BussinessCode.ADD_COIN_FAILED);
@@ -105,9 +111,9 @@ public class GameUserController extends BasicController {
     }
     @RequestMapping("/ajax_update_pwd.do")
     @ResponseBody
-    public BussinessMsg ajaxUpdatePwd(Integer userId,String pwd, String extractPwd){
+    public BussinessMsg ajaxUpdatePwd(Integer userId,String pwd){
     	   try {
-    		   return GameUserService.updatePwd(userId,pwd,extractPwd);
+    		   return GameUserService.updatePwd(userId,pwd);
            } catch (Exception e) {
                log.error("",e);
                return BussinessMsgUtil.returnCodeMessage(BussinessCode.UPDATE_PWD_FAILED);
@@ -116,7 +122,19 @@ public class GameUserController extends BasicController {
     	
        
     }
-    
+    @RequestMapping("/ajax_user_freeze.do")
+    @ResponseBody
+    public BussinessMsg ajaxUserFreeze(Integer userId,int freeze){
+    	   try {
+    		   return GameUserService.userFreeze(userId,freeze);
+           } catch (Exception e) {
+               log.error("",e);
+               return BussinessMsgUtil.returnCodeMessage(BussinessCode.UPDATE_PWD_FAILED);
+           }
+    	
+    	
+       
+    } 
     
     
     @RequestMapping("/gameUser_add.do")

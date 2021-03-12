@@ -33,14 +33,14 @@
 					value="" placeholder="请输入新密码">
 			</div>
 		</div>
-		<div class="layui-form-item">
+<!-- 	<div class="layui-form-item">
 			<label class="layui-form-label">交易密码</label>
 			<div class="layui-input-block">
 				<input type="text" class="layui-input" name="extractPwd" maxlength="20"
 					value="" placeholder="请输入新交易密码">
 			</div>
 		</div>
-
+ -->	
 
 		<div class="layui-form-item" style="text-align: center;">
 			<button class="layui-btn" lay-submit="" lay-filter="updatePwd">保存</button>

@@ -75,7 +75,7 @@
     var $;
     layui.config({
         base : "${ctx}/static/js/"
-    }).use(['form', 'table', 'layer','common'], function () {
+    }).use(['form', 'table', 'layer','common','util'], function () {
          $ =  layui.$;
                 var form = layui.form,
                 table = layui.table,
@@ -93,16 +93,22 @@
             skin:'row',
             even:'true',
             size: 'sm',
+
             cols: [[
                 {type:"checkbox"},
                 {field:'id', title: '玩家ID',align:'center' },
                 {field:'acc', title: '玩家账号',align:'center'},
                 {field:'pwd', title: '玩家密码',align:'center'},
-                {field:'extractPwd', title: '交易密码',align:'center'},
                 {field:'nick', title: '玩家昵称',align:'center'},
                 {field:'phone', title: '电话号码',align:'center'},
-                {field:'email', title: 'Email',align:'center'},
-                {field:'coin', title: '金币',align:'center' ,templet: '#coinTpl'},
+                {field:'sex', title: '性别',align:'center'},
+                {field:'coin', title: '金币',align:'center' },
+                {field:'freezed', title: '是否冻结',align:'center'},
+                {field:'isTourist', title: '是否游客',align:'center'},
+                {field:'isLeader', title: '是否团长',align:'center'},
+                {field:'agentId', title: '代理Id',align:'center'},
+                {field:'presenterId', title: '推荐人Id',align:'center'},
+                {field:'regTime', title: '注册时间',align:'center',templet:"<div>{{layui.util.toDateString(d.regTime*1000)}}</div>"},
                 {title: '操作', align:'center', width: '17%',toolbar: '#userBar'}
             ]],
             page: true,
@@ -161,13 +167,20 @@
                     common.cmsLayOpen('编辑矿石',url,'550px','265px');
 
                
-                }else if(layEvent === 'update_user'){
+                }else if(layEvent === 'update_pwd'){
                 	 var userId = data.id;
                      var act = "pwd";
                      var url =  "${ctx}/gameUser/user_update.do?userId="+userId+"&act="+act;
                      common.cmsLayOpen('修改密码',url,'550px','265px');
                 	
-                }
+                }else if(layEvent === 'user_freeze'){
+               	 var userId = data.id;
+                 var act = "freeze";
+                 var url =  "${ctx}/gameUser/user_update.do?userId="+userId+"&act="+act;
+                 common.cmsLayOpen('解冻冻结',url,'550px','265px');
+            	
+            }
+            
             
         });
 
@@ -178,7 +191,7 @@
    {{d.mineral/100}}
 </script>
 <script type="text/html" id="coinTpl">
-   {{d.coin/100}}
+   {{d.coin}}
 </script>
 <!--工具条 -->
 <script type="text/html" id="userBar">
@@ -187,10 +200,13 @@
             <a class="layui-btn layui-btn-xs coin_add" lay-event="coin_add"><i class="layui-icon larry-icon larry-bianji2"></i>添加金币</a>
         </shiro:hasPermission>
         <shiro:hasPermission name="42wUOYef">
-            <a class="layui-btn layui-btn-xs update_user" lay-event="update_user"><i class="layui-icon larry-icon larry-bianji2"></i>修改密码</a>
+            <a class="layui-btn layui-btn-xs update_user" lay-event="update_pwd"><i class="layui-icon larry-icon larry-bianji2"></i>修改密码</a>
         </shiro:hasPermission>
          <shiro:hasPermission name="uG9vazWK">
             <a class="layui-btn layui-btn-xs mineral_add" lay-event="mineral_add"><i class="layui-icon larry-icon larry-bianji2"></i>添加矿石</a>
+        </shiro:hasPermission>
+        <shiro:hasPermission name="QsTIzP4o">
+            <a class="layui-btn layui-btn-xs user_freeze" lay-event="user_freeze"><i class="layui-icon larry-icon larry-bianji2"></i>解冻冻结</a>
         </shiro:hasPermission>
     </div>
 </script>

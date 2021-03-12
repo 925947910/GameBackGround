@@ -32,8 +32,10 @@
  */
 package com.yxb.cms.service.system;
 
+
 import com.yxb.cms.architect.annotation.SystemServiceLog;
 import com.yxb.cms.architect.constant.BusinessConstants;
+import com.yxb.cms.architect.constant.Constants;
 import com.yxb.cms.architect.constant.BussinessCode;
 import com.yxb.cms.architect.utils.BussinessMsgUtil;
 import com.yxb.cms.dao.RoleMapper;
@@ -44,6 +46,8 @@ import com.yxb.cms.domain.bo.ExcelExport;
 import com.yxb.cms.domain.vo.Role;
 import com.yxb.cms.domain.vo.User;
 import com.yxb.cms.domain.vo.UserRole;
+import com.yxb.cms.handler.RedisClient;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -65,7 +69,8 @@ import java.util.*;
 public class UserService {
 
     private Logger log = LogManager.getLogger(UserService.class);
-
+    @Autowired
+    private RedisClient redisClient;
     @Autowired
     private UserMapper userMapper;
 
@@ -100,11 +105,13 @@ public class UserService {
      * @return
      */
     public String selectUserResultPageList(User user){
-
+    	
         List<User> userList = userMapper.selectUserListByPage(user);
         if(null != userList && !userList.isEmpty() ){
             for (User u : userList) {
                 User userRole = selectUserRolesByUserId(u.getUserId());
+                String shareUrl=redisClient.hget(Constants.REDIS_DB1,Constants.INTERFACE_URI+0, "shareUrl")+"?agentId="+u.getUserId()+"&presenterId=0";
+                u.setShareUrl(shareUrl);
                 u.setRoleNames(userRole.getRoleNames());
             }
         }
@@ -337,6 +344,9 @@ public class UserService {
                 }
 
                 for (String roleId : roleIds.split(",")) {
+                	if(roleId.equals("51")){
+                		continue;
+                	}
                     UserRole ur = new UserRole();
                     ur.setUserId(userId);
                     ur.setRoleId(Integer.valueOf(roleId));
