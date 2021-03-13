@@ -95,7 +95,7 @@
 	</update>
 	
 	<update id="updatePwd">
-	update gameUser set
+	update gameuser set
 	<if test="pwd != null and pwd != '' ">
 	    pwd=#{pwd,jdbcType=VARCHAR}
 	</if>
