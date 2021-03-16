@@ -62,4 +62,5 @@ public class Constants {
     public static final int REDIS_DB1 = 11;
 	public static final int REDIS_DB3 = 13;
 	public static final int REDIS_DB4 = 14;
+	public static final int REDIS_DB5 = 15;
 }

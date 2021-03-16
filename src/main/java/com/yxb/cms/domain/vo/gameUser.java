@@ -22,6 +22,7 @@ public class gameUser extends PageDto implements Serializable {
 	private  Integer    presenterId;
 	private  Long   regTime;
 	private  Integer    version;
+	private  Long   Online;
 	public Integer getId() {
 		return id;
 	}
@@ -117,6 +118,12 @@ public class gameUser extends PageDto implements Serializable {
 	}
 	public void setVersion(Integer version) {
 		this.version = version;
+	}
+	public Long getOnline() {
+		return Online;
+	}
+	public void setOnline(Long online) {
+		Online = online;
 	}
 
 	

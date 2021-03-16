@@ -34,6 +34,7 @@ package com.yxb.cms.handler;
 
 
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -156,6 +157,39 @@ public class RedisClient {
         }
 
     }
+    
+    
+    public Set<String> zrange(int db,String key,long start, long end) {
+
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            jedis.select(db);
+            return jedis.zrange(key, start, end);
+        } catch (Exception e){
+            log.error(e.getMessage(),e);
+            throw e;
+        }finally {
+            jedis.close();
+        }
+
+    }
+    public Set<String> zrangeByScore(int db,String key,long start, long end) {
+
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            jedis.select(db);
+            return jedis.zrangeByScore(key, start, end);
+        } catch (Exception e){
+            log.error(e.getMessage(),e);
+            throw e;
+        }finally {
+            jedis.close();
+        }
+
+    }
+    
     public JedisPool getJedisPool() {
         return jedisPool;
     }

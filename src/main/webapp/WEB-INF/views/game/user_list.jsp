@@ -63,6 +63,10 @@
  -->  
             </blockquote>
             <div class="larry-separate"></div>
+            <div class="layui-input-inline">
+								<h2 class="t-center">当前在线玩家:</h2><input id="currOnlines" type="text" />
+							</div>
+							</br>
             <!-- 用户列表 -->
             <div class="layui-tab-item layui-show " style="padding: 10px 15px;">
                 <table id="userTableList"  lay-filter="userTableId" ></table>
@@ -108,11 +112,14 @@
                 {field:'isLeader', title: '是否团长',align:'center'},
                 {field:'agentId', title: '代理Id',align:'center'},
                 {field:'presenterId', title: '推荐人Id',align:'center'},
+                {field:'Online', title: '最后投注时间',align:'center',templet:"<div>{{layui.util.toDateString(d.Online*1000)}}</div>"},
                 {field:'regTime', title: '注册时间',align:'center',templet:"<div>{{layui.util.toDateString(d.regTime*1000)}}</div>"},
+                
                 {title: '操作', align:'center', width: '17%',toolbar: '#userBar'}
             ]],
             page: true,
             done: function (res, curr, count) {
+            	$("#currOnlines").val(res.currOnlines);
                 common.resizeGrid();
                 layer.close(loading);
 
@@ -132,6 +139,7 @@
                     height: 'full-140',
                     page: true,
                     done: function (res, curr, count) {
+                    	$("#currOnlines").val(res.currOnlines);
                         common.resizeGrid();
                         layer.close(loading);
 

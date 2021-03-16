@@ -90,12 +90,30 @@ public class GameUserService {
      */
     public String selectUserResultPageList(gameUser user){
         List<gameUser> userList = GameUserMapper.selectUserListByPage(user);
+       
         Long count = GameUserMapper.selectCountUser(user);
+        long now=System.currentTimeMillis()/1000;
+        Set<String> uids=redisClient.zrangeByScore(Constants.REDIS_DB5, "Onlines", now-60, now);
+        Map <Integer,Long> maps=new HashMap<Integer, Long>();
+     for (Iterator iterator = uids.iterator(); iterator.hasNext();) {
+		String uidStr = (String) iterator.next();
+		String timeStr= (String) iterator.next();
+		maps.put(Integer.parseInt(uidStr),Long.parseLong(timeStr));
+	   }
+     for (int i = 0; i < userList.size(); i++) {
+    	 gameUser  currUser = userList.get(i);	
+    	Long t= maps.get(currUser.getId());
+    	 if(t==null){
+    		 t=1614528000L;
+    	 }
+    	 currUser.setOnline(t);
+		}  
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("code",0);
         map.put("msg","");
         map.put("count",count);
         map.put("data", userList);
+        map.put("currOnlines", uids.size()/2);
         return Json.toJson(map);
     }
 
