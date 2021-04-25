@@ -27,7 +27,7 @@
         <!-- 顶部-->
         <div class="layui-header header header-menu ">
             <div class="layui-main ">
-                <a href="#" class="logo">小游戏后台管理系统</a>
+                <a href="#" class="logo">超级大赢家后台管理系统</a>
                 <!-- 左侧导航收缩开关 -->
                 <div class="side-menu-switch" id="toggle"><span class="switch" ara-hidden="true"></span></div>
                 <!-- 顶级菜单 -->

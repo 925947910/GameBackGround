@@ -77,6 +77,11 @@
 				'%')
 			</if>
 			<if
+				test="searchTerm != null and searchTerm != '' and searchContent != null and  searchContent != '' and  searchTerm == 'agentIdTerm' ">
+			    AND agentId= #{searchContent,jdbcType=INTEGER}
+			</if>
+			
+			<if
 				test="searchTerm1 != null and searchTerm1 != '' and searchContent1 != null and  searchContent1 != '' and  searchTerm1 == 'agentIdTerm' ">
 				AND agentId= #{searchContent1,jdbcType=INTEGER}
 			</if>

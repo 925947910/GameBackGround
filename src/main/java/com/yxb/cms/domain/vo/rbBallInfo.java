@@ -16,6 +16,8 @@ public class rbBallInfo extends PageDto implements Serializable{
 	private String lotteryResult;
 	private Integer lotteryPool;
 	private Integer lotteryPrice;
+	private Integer totalWin;
+	private Integer isDraw;
 	private Long time;
 	public Integer getId() {
 		return id;
@@ -46,6 +48,18 @@ public class rbBallInfo extends PageDto implements Serializable{
 	}
 	public void setLotteryPrice(Integer lotteryPrice) {
 		this.lotteryPrice = lotteryPrice;
+	}
+	public Integer getTotalWin() {
+		return totalWin;
+	}
+	public void setTotalWin(Integer totalWin) {
+		this.totalWin = totalWin;
+	}
+	public Integer getIsDraw() {
+		return isDraw;
+	}
+	public void setIsDraw(Integer isDraw) {
+		this.isDraw = isDraw;
 	}
 	public Long getTime() {
 		return time;

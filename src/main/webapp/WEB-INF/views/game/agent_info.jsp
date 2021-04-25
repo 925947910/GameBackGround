@@ -62,6 +62,7 @@
             size: 'sm',
             cols: [[
                 {type:"checkbox"},
+                {field:'userId', title: '代理Id',align:'center' },
                 {field:'userLoginName', title: '登陆账号',align:'center' },
                 {field:'userName', title: '用户姓名',align:'center'},
                 {field:'userStatus', title: '用户状态',align:'center',width: '8%',templet: '#userStatusTpl'},

@@ -36,11 +36,10 @@
 							</div>
 							<div class="layui-input-inline" style="width: 110px;">
 								<select name="searchTerm">
-									<option value="uidTerm">玩家ID</option>
 									<option value="idTerm">订单ID</option>
-									<option  value="orderNoTerm">订单号</option>
-									<option  value="orderTypeTerm">订单类型</option>
-									<option  value="succTerm">成功订单</option>
+									<option value="orderNoTerm">订单号</option>
+									<option value="uidTerm">玩家ID</option>
+									<option value="agentIdTerm">代理ID</option>
 								</select>
 							</div>
 							<div class="layui-input-inline" style="width: 145px;">
@@ -50,7 +49,9 @@
 							
 							<div class="layui-input-inline" style="width: 110px;">
 								<select name="searchTerm1">
-									<option value="agentIdTerm">代理ID</option>
+								    <option  value="orderTypeTerm">订单类型</option>
+									<option  value="succTerm">成功订单</option>
+									<
 								</select>
 							</div>
 							<div class="layui-input-inline" style="width: 145px;">
@@ -147,7 +148,9 @@
             form.on('submit(orderSearchFilter)', function (data) {
                 table.reload('orderTableId',{
                     where: {
-                            searchTerm:data.field.searchTerm,
+                    	    beginStr:data.field.beginStr,
+                 	        endStr:data.field.endStr,
+                    	    searchTerm:data.field.searchTerm,
                             searchContent:data.field.searchContent,
                             searchTerm1:data.field.searchTerm1,
                             searchContent1:data.field.searchContent1

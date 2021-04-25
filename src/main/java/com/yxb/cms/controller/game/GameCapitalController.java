@@ -34,8 +34,6 @@ package com.yxb.cms.controller.game;
 
 
 
-import com.yxb.cms.architect.constant.BussinessCode;
-import com.yxb.cms.architect.utils.BussinessMsgUtil;
 import com.yxb.cms.controller.BasicController;
 import com.yxb.cms.domain.bo.BussinessMsg;
 import com.yxb.cms.domain.vo.User;
@@ -52,7 +50,6 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -176,9 +173,26 @@ public class GameCapitalController extends BasicController {
 	public String ajaxOrderList(orderInfo orderInfo,HttpServletRequest request){
 		 User 	user=this.getCurrentUser();
 		if(!user.getUserLoginName().equals("admin")&&!user.getUserLoginName().equals("mng001")){
-			orderInfo.setSearchTerm1("agentIdTerm");
-			orderInfo.setSearchContent1(user.getUserId()+"");
+			orderInfo.setSearchTerm("agentIdTerm");
+			orderInfo.setSearchContent(user.getUserId()+"");
 		}
+		try {
+			if (!StringUtils.isBlank(orderInfo.getBeginStr())) {
+				DateFormat format=	new SimpleDateFormat("yyyy-MM-dd");
+				Date date=format.parse(orderInfo.getBeginStr());
+				orderInfo.setBegin(date.getTime()/1000);
+			}
+			if (!StringUtils.isBlank(orderInfo.getEndStr())) {
+				DateFormat format=	new SimpleDateFormat("yyyy-MM-dd");
+				Date date=format.parse(orderInfo.getEndStr());
+				orderInfo.setEnd(date.getTime()/1000);
+			}
+		} catch (Exception e) {
+			log.error("",e);
+			// TODO: handle exception
+		}
+		
+		
 		String str=GameCapitalService.selectOrderResultPageList(orderInfo, request);
 		return str;
 		

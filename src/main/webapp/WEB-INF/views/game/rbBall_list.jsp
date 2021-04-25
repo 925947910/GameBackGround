@@ -39,6 +39,15 @@
 							</a>
 						</div>
 					</shiro:hasPermission>
+                    <shiro:hasPermission name="63Ry9Rel">
+						<div class="layui-inline">
+							<button type="button" class="layui-btn" id="uploadExcel">
+						<i class="layui-icon">&#xe67c;</i>上传excel
+					</button>
+						</div>
+					</shiro:hasPermission>
+					
+
 
 				</blockquote>
 				<div class="larry-separate"></div>
@@ -54,13 +63,14 @@
     var $;
     layui.config({
         base : "${ctx}/static/js/"
-    }).use(['form', 'table', 'layer','common','util'], function () {
+    }).use(['form', 'table', 'layer','common','util','upload'], function () {
          $ =  layui.$;
                 var form = layui.form,
                 table = layui.table,
                 layer = layui.layer,
                 common = layui.common;
                 util=layui.util;
+                upload = layui.upload;
 
         var loading = layer.load(0,{ shade: [0.3,'#000']});
         /**用户表格加载*/
@@ -79,7 +89,8 @@
                 {field:'issue', title: '期No.',align:'center'},
                 {field:'lotteryPool', title: '累计投注',align:'center'},
                 {field:'lotteryResult', title: '开奖结果',align:'center'},
-                {field:'lotteryPrice', title: '累计中奖',align:'center'}
+                {field:'isDraw', title: '是否开奖',align:'center'},
+                {field:'totalWin', title: '累计中奖',align:'center'}
             ]],
             page: true,
             done: function (res, curr, count) {
@@ -94,6 +105,26 @@
             common.cmsLayOpen('新增一期',url,'550px','265px');
         });
 
+        upload.render({
+            elem: '#uploadExcel'
+            ,url:  "${ctx}/gameActive/ajax_rbBall_excel_add.do"//此处为所上传的请求路径
+            ,accept: 'file' //普通文件
+            ,exts: 'xls|excel|xlsx' //只允许上传压缩文件
+            ,done: function(res){
+            	if(res.returnCode == 0000){
+                    common.cmsLaySucMsg("保存成功")
+                  //  var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                 //   parent.layer.close(index); //再执行关闭                        //刷新父页面
+                      common.resizeGrid();
+                      self.location.reload();
+                  //  parent.location.index.reload();
+                }else{
+                    common.cmsLayErrorMsg(data.returnMessage);
+                }
+            }
+        });
+        
+        
 
     });
 </script>

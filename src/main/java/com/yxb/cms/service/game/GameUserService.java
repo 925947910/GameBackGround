@@ -51,6 +51,7 @@ import com.yxb.cms.domain.po.bills;
 import com.yxb.cms.domain.vo.Role;
 import com.yxb.cms.domain.vo.User;
 import com.yxb.cms.domain.vo.UserRole;
+import com.yxb.cms.domain.vo.benzBmwInfo;
 import com.yxb.cms.domain.vo.gameUser;
 import com.yxb.cms.handler.RedisClient;
 
@@ -90,33 +91,68 @@ public class GameUserService {
      */
     public String selectUserResultPageList(gameUser user){
         List<gameUser> userList = GameUserMapper.selectUserListByPage(user);
-       
         Long count = GameUserMapper.selectCountUser(user);
-        long now=System.currentTimeMillis()/1000;
-        Set<String> uids=redisClient.zrangeByScore(Constants.REDIS_DB5, "Onlines", now-60, now);
-        Map <Integer,Long> maps=new HashMap<Integer, Long>();
-     for (Iterator iterator = uids.iterator(); iterator.hasNext();) {
-		String uidStr = (String) iterator.next();
-		String timeStr= (String) iterator.next();
-		maps.put(Integer.parseInt(uidStr),Long.parseLong(timeStr));
-	   }
-     for (int i = 0; i < userList.size(); i++) {
-    	 gameUser  currUser = userList.get(i);	
-    	Long t= maps.get(currUser.getId());
-    	 if(t==null){
-    		 t=1614528000L;
-    	 }
-    	 currUser.setOnline(t);
-		}  
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("code",0);
         map.put("msg","");
         map.put("count",count);
         map.put("data", userList);
-        map.put("currOnlines", uids.size()/2);
         return Json.toJson(map);
     }
-
+    public String selectOnlineUserResultPageList(gameUser user){
+       
+    	List<gameUser> gameUsers=new ArrayList<gameUser>();
+    	long count=1;
+    	String id=user.getSearchContent();
+    	
+    	List<String> idList=new ArrayList<String>();
+    	 long now=System.currentTimeMillis()/1000;
+    	if(!StringUtils.isEmpty(id)){
+    		idList.add(id+"");
+    	}else{
+    	        Set<String> uids=redisClient.zrevrangeByScore(Constants.REDIS_DB5, "Onlines", now, now-60);
+    	        count=uids.size();
+    	        int beginIndex=user.getPage()*user.getLimit()-user.getLimit();
+    	        int endIndex=user.getPage()*user.getLimit();  
+    	      int index=1;  
+    		for (Iterator iterator = uids.iterator(); iterator.hasNext();) {
+				String string = (String) iterator.next();
+				index+=1;
+				if(index>=beginIndex&&index<=endIndex){
+					idList.add(string);
+				}
+				if(index>endIndex){
+					break;
+				}
+			 }	
+    	 }
+    	redisClient.zremrangeByScore(Constants.REDIS_DB5, "Onlines", "0", (now-60)+"");
+       for (int i = 0; i < idList.size(); i++) {
+    	   Map<String,String> userMap=redisClient.hgetAll(Constants.REDIS_DB0, "user:"+idList.get(i));
+    	   Double onlineData=redisClient.zscore(Constants.REDIS_DB5, "Onlines", idList.get(i));
+    	   Long online=0l;
+    	   if(onlineData!=null&&userMap!=null&&!userMap.isEmpty()){
+    		   online=onlineData.longValue(); 
+    		   gameUser gameUser= new gameUser();
+       		   gameUser.setId(Integer.parseInt(userMap.get("id")));
+       		   gameUser.setAcc(userMap.get("acc"));
+       		   gameUser.setCoin(Integer.parseInt(userMap.get("coin")));
+       		   gameUser.setNick(userMap.get("nick"));
+       		   gameUser.setSex(Integer.parseInt(userMap.get("sex")));
+       		   gameUser.setOnline(online);
+       		   gameUsers.add(gameUser);
+    	   }else{
+    		   count-=1; 
+    	   } 
+    	}
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("code",0);
+        map.put("msg","");
+        map.put("count",count);
+        map.put("data", gameUsers);
+        map.put("currOnlines",count);
+        return Json.toJson(map);
+    }
     
 
     @Transactional
@@ -143,9 +179,9 @@ public class GameUserService {
 		int version = DBUser.getVersion();
 		int oldCoin = DBUser.getCoin();
 		int newCoin = oldCoin+coin;
-		if(DBUser.getIsTourist()!=1) {
-			throw new RuntimeException("非内部玩家不可添加");
-		}
+//		if(DBUser.getIsTourist()!=1) {
+//			throw new RuntimeException("非内部玩家不可添加");
+//		}
 		if(newCoin<0) {
 			throw new RuntimeException("金币不能为负");
 		}

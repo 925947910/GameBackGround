@@ -11,21 +11,34 @@ public class benzBmwInfo extends PageDto implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private Long issue;
-	private String result;
-	public Long getIssue() {
-		return issue;
+	private int uid;
+	private int pool;
+	private int per;
+	private int perWin;
+	public int getUid() {
+		return uid;
 	}
-	public void setIssue(Long issue) {
-		this.issue = issue;
+	public void setUid(int uid) {
+		this.uid = uid;
 	}
-	public String getResult() {
-		return result;
+	public int getPool() {
+		return pool;
 	}
-	public void setResult(String result) {
-		this.result = result;
+	public void setPool(int pool) {
+		this.pool = pool;
 	}
-	
+	public int getPer() {
+		return per;
+	}
+	public void setPer(int per) {
+		this.per = per;
+	}
+	public int getPerWin() {
+		return perWin;
+	}
+	public void setPerWin(int perWin) {
+		this.perWin = perWin;
+	}
 	
 	
 	

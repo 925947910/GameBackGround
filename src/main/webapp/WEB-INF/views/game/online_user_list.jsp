@@ -35,9 +35,31 @@
                         </div>
                         <a class="layui-btn userSearchList_btn" lay-submit lay-filter="userSearchFilter"><i class="layui-icon larry-icon larry-chaxun7"></i>查询</a>
                     </form>
+                </div>
+    
+     <!--      <shiro:hasPermission name="0rbT8t2P">
+                    <div class="layui-inline">
+                        <a class="layui-btn layui-btn-normal userAdd_btn"> <i class="layui-icon larry-icon larry-xinzeng1"></i>新增用户</a>
+                    </div>
+                </shiro:hasPermission>
+                <shiro:hasPermission name="0jOfTHGx">
+                    <div class="layui-inline">
+                        <a class="layui-btn layui-btn-normal excelUserExport_btn"  style="background-color:#5FB878"> <i class="layui-icon larry-icon larry-danye"></i>导出</a>
+                    </div>
+                </shiro:hasPermission>
+                
+                <shiro:hasPermission name="lBE3hz5c">
+                    <div class="layui-inline">
+                        <a class="layui-btn layui-btn-danger userBatchFail_btn"><i class="layui-icon larry-icon larry-shanchu"></i>批量失效</a>
+                    </div>
+                </shiro:hasPermission>
+ -->  
             </blockquote>
-             <!--
-        
+            <div class="larry-separate"></div>
+            <div class="layui-input-inline">
+								<h2 class="t-center">当前在线玩家:</h2><input id="currOnlines" type="text" />
+							</div>
+							</br>
             <!-- 用户列表 -->
             <div class="layui-tab-item layui-show " style="padding: 10px 15px;">
                 <table id="userTableList"  lay-filter="userTableId" ></table>
@@ -61,7 +83,7 @@
         /**用户表格加载*/
         table.render({
             elem: '#userTableList',
-            url: '${ctx}/gameActive/ajax_benzBmw_list.do',
+            url: '${ctx}/gameUser/ajax_online_user_list.do',
             id:'userTableId',
             method: 'post',
             height:'full-140',
@@ -71,11 +93,13 @@
 
             cols: [[
                 {type:"checkbox"},
-                {field:'uid', title: '玩家ID',align:'center' },
-                {field:'pool', title: '金币池',align:'center'},
-                {field:'per', title: '最大回本比例',align:'center'},
-                {field:'perWin', title: '胜率',align:'center'},
-                {title: '操作', align:'center', width: '17%',toolbar: '#userBar'}
+                {field:'id', title: '玩家ID',align:'center' },
+                {field:'acc', title: '玩家账号',align:'center'},
+                {field:'nick', title: '玩家昵称',align:'center'},
+                {field:'sex', title: '性别',align:'center'},
+                {field:'coin', title: '金币',align:'center' },
+                {field:'Online', title: '最后投注时间',align:'center',templet:"<div>{{layui.util.toDateString(d.Online*1000)}}</div>"}
+                
             ]],
             page: true,
             done: function (res, curr, count) {
@@ -110,22 +134,43 @@
 
         });
 
-
+        /**新增*/
+        $(".gameUserAdd_btn").click(function(){
+            var url = "${ctx}/gameUser/gameUser_add.do";
+            common.cmsLayOpen('新增玩家',url,'550px','265px');
+        });
         /**监听工具条*/
         table.on('tool(userTableId)', function(obj){
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值
 
             //添加金币
-            if(layEvent === 'edit_benzBmw') {
-                var uid = data.uid;
-                var pool = data.pool;
-                var per = data.per;
-                var perWin = data.perWin;
-                var url =  "${ctx}/gameActive/edit_benzBmw.do?uid="+uid+"&pool="+pool+"&per="+per+"&perWin="+perWin;
+            if(layEvent === 'coin_add') {
+                var userId = data.id;
+                var act = "coin";
+                var url =  "${ctx}/gameUser/user_update.do?userId="+userId+"&act="+act;
                 common.cmsLayOpen('编辑金币',url,'550px','265px');
 
             //添加矿石
+            }else if(layEvent === 'mineral_add') {
+                    var userId = data.id;
+                    var act = "mineral";
+                    var url =  "${ctx}/gameUser/user_update.do?userId="+userId+"&act="+act;
+                    common.cmsLayOpen('编辑矿石',url,'550px','265px');
+
+               
+                }else if(layEvent === 'update_pwd'){
+                	 var userId = data.id;
+                     var act = "pwd";
+                     var url =  "${ctx}/gameUser/user_update.do?userId="+userId+"&act="+act;
+                     common.cmsLayOpen('修改密码',url,'550px','265px');
+                	
+                }else if(layEvent === 'user_freeze'){
+               	 var userId = data.id;
+                 var act = "freeze";
+                 var url =  "${ctx}/gameUser/user_update.do?userId="+userId+"&act="+act;
+                 common.cmsLayOpen('解冻冻结',url,'550px','265px');
+            	
             }
             
             
@@ -143,9 +188,7 @@
 <!--工具条 -->
 <script type="text/html" id="userBar">
     <div class="layui-btn-group">
-        <shiro:hasPermission name="fZKo6sJb">
-            <a class="layui-btn layui-btn-xs edit_benzBmw" lay-event="edit_benzBmw"><i class="layui-icon larry-icon larry-bianji2"></i>编辑</a>
-        </shiro:hasPermission>       
+      
     </div>
 </script>
 

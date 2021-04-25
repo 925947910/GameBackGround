@@ -63,6 +63,10 @@
 	<!-- 查询条件 -->
 	<sql id="selectPageParmas">
 		<where>
+			<if test="begin != null and begin != '' and end != null and  end != '' ">
+				AND time BETWEEN #{begin,jdbcType=BIGINT} and
+				#{end,jdbcType=BIGINT}
+			</if>
 			<if
 				test="searchTerm != null and searchTerm != '' and searchContent != null and  searchContent != '' and  searchTerm == 'idTerm' ">
 				AND id= #{searchContent,jdbcType=INTEGER}
@@ -72,27 +76,23 @@
 				AND uid= #{searchContent,jdbcType=INTEGER}
 			</if>
 			<if
-				test="searchTerm != null and searchTerm != '' and searchContent != null and  searchContent != '' and  searchTerm == 'orderTypeTerm' ">
-				 orderType= #{searchContent,jdbcType=INTEGER}
-			</if>
-			<if
 				test="searchTerm != null and searchTerm != '' and searchContent != null and  searchContent != '' and  searchTerm == 'orderNoTerm' ">
 				AND orderRemote= #{searchContent,jdbcType=VARCHAR}
 			</if>
+
 			<if
-				test="searchTerm != null and searchTerm != '' and searchContent != null and  searchContent != '' and  searchTerm == 'succTerm' ">
-			    AND orderType= #{searchContent,jdbcType=INTEGER} AND status=3
+				test="searchTerm != null and searchTerm != '' and searchContent != null and  searchContent != '' and  searchTerm == 'agentIdTerm' ">
+				AND agentId= #{searchContent,jdbcType=INTEGER}
 			</if>
-            <if
-				test="searchTerm1 != null and searchTerm1 != '' and searchContent1 != null and  searchContent1 != '' and  searchTerm1 == 'agentIdTerm' ">
-				AND agentId= #{searchContent1,jdbcType=INTEGER}
+
+			<if
+				test="searchTerm1 != null and searchTerm1 != '' and searchContent1 != null and  searchContent1 != '' and  searchTerm1 == 'orderTypeTerm' ">
+				AND orderType= #{searchContent1,jdbcType=INTEGER}
 			</if>
 			<if
-				test="begin != null and begin != '' and end != null and  end != '' ">
-				AND time BETWEEN #{begin,jdbcType=BIGINT} and
-				#{end,jdbcType=BIGINT}
+				test="searchTerm1 != null and searchTerm1 != '' and searchContent1 != null and  searchContent1 != '' and  searchTerm1 == 'succTerm' ">
+				AND orderType= #{searchContent1,jdbcType=INTEGER} AND status=3
 			</if>
-			
 		</where>
 	</sql>
 

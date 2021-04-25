@@ -52,7 +52,21 @@ public class RedisClient {
 
     private JedisPool jedisPool;
 
+    public Set<String> keys(int db,String key) {
 
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            jedis.select(db);
+            return jedis.keys(key);
+        } catch (Exception e){
+            log.error(e.getMessage(),e);
+            throw e;
+        }finally {
+            jedis.close();
+        }
+
+    }
     public void set(int db,String key, String value) {
         Jedis jedis = null;
         try {
@@ -113,7 +127,7 @@ public class RedisClient {
         }
 
     }
-    
+
     public String hget(int db,String key,String field) {
 
         Jedis jedis = null;
@@ -129,6 +143,7 @@ public class RedisClient {
         }
 
     }
+    
     public void hset(int db,String key,String field, String value) {
         Jedis jedis = null;
         try {
@@ -142,7 +157,20 @@ public class RedisClient {
             jedis.close();
         }
     }
-
+    
+    public void hmset(int db,String key,Map<String,String> hash) {
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            jedis.select(db);
+            jedis.hmset(key, hash);
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+            throw e;
+        }finally {
+            jedis.close();
+        }
+    }
     public boolean exists(int db,String key) {
         Jedis jedis = null;
         try {
@@ -157,8 +185,36 @@ public class RedisClient {
         }
 
     }
-    
-    
+    public Long zrem(int db,String key,String... members) {
+
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            jedis.select(db);
+            return jedis.zrem(key, members);
+        } catch (Exception e){
+            log.error(e.getMessage(),e);
+            throw e;
+        }finally {
+            jedis.close();
+        }
+
+    }
+    public Long zcount(int db,String key,String min, String max) {
+
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            jedis.select(db);
+            return jedis.zcount(key, min, max);
+        } catch (Exception e){
+            log.error(e.getMessage(),e);
+            throw e;
+        }finally {
+            jedis.close();
+        }
+
+    }
     public Set<String> zrange(int db,String key,long start, long end) {
 
         Jedis jedis = null;
@@ -166,6 +222,21 @@ public class RedisClient {
             jedis = jedisPool.getResource();
             jedis.select(db);
             return jedis.zrange(key, start, end);
+        } catch (Exception e){
+            log.error(e.getMessage(),e);
+            throw e;
+        }finally {
+            jedis.close();
+        }
+
+    }
+    public Set<String> zrevrange(int db,String key,long start, long end) {
+
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            jedis.select(db);
+            return jedis.zrevrange(key, start, end);
         } catch (Exception e){
             log.error(e.getMessage(),e);
             throw e;
@@ -189,6 +260,53 @@ public class RedisClient {
         }
 
     }
+    public Set<String> zrevrangeByScore(int db,String key,double max, double min) {
+
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            jedis.select(db);
+            return jedis.zrevrangeByScore(key, max, min);
+        } catch (Exception e){
+            log.error(e.getMessage(),e);
+            throw e;
+        }finally {
+            jedis.close();
+        }
+
+    }
+    public Double zscore(int db,String key,String member) {
+
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            jedis.select(db);
+            return jedis.zscore(key, member);
+        } catch (Exception e){
+            log.error(e.getMessage(),e);
+            throw e;
+        }finally {
+            jedis.close();
+        }
+
+    }
+    public Long zremrangeByScore(int db,String key,String start,String end) {
+
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            jedis.select(db);
+            return jedis.zremrangeByScore(key, start, end);
+        } catch (Exception e){
+            log.error(e.getMessage(),e);
+            throw e;
+        }finally {
+            jedis.close();
+        }
+
+    }
+     
+    
     
     public JedisPool getJedisPool() {
         return jedisPool;

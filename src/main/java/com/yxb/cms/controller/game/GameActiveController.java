@@ -45,8 +45,11 @@ import com.yxb.cms.service.game.GameActiveService;
 
 
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -95,11 +98,50 @@ public class GameActiveController extends BasicController {
      
    	}
     
-    @RequestMapping("/benzBmw_info.do")
+
+    
+    @RequestMapping("/ajax_rbBall_excel_add.do")
+   	@ResponseBody
+   	public BussinessMsg addRbBallExcel(HttpServletRequest request){
+ 
+   	  try {
+          return GameActiveService.addRbBallExcel(request);
+      } catch (Exception e) {
+          log.error("保存错误",e);
+          return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_ERROR);
+      }
+     
+   	}
+    
+    
+    @RequestMapping("/benzBmw_list.do")
     public String benzBmwInfo() {
     	return "game/benzBmw_info";
     }
-    @RequestMapping("/ajax_benzBmw_info.do")
+    @RequestMapping("/edit_benzBmw.do")
+    public String to_benzBmw_edit(Model model,int uid,int per,int pool ,int perWin) {
+    	model.addAttribute("uid", uid);
+    	model.addAttribute("per", per);
+    	model.addAttribute("pool", pool);
+    	model.addAttribute("perWin", perWin);
+    	return "game/benzBmw_edit";
+    }
+    @RequestMapping("/ajax_edit_benzBmw.do")
+   	@ResponseBody
+   	public BussinessMsg edit_benzBmw(benzBmwInfo benzBmwInfo){
+ 
+   	  try {
+          return GameActiveService.edit_benzBmw(benzBmwInfo);
+      } catch (Exception e) {
+          log.error("保存错误",e);
+          return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_ERROR);
+      }
+     
+   	}
+    
+    
+    
+    @RequestMapping("/ajax_benzBmw_list.do")
    	@ResponseBody
    	public String ajaxBenzBmwInfo(benzBmwInfo benzBmwInfo){
    		

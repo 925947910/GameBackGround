@@ -96,6 +96,28 @@ public class GameUserController extends BasicController {
 		}
        
     }
+    /**
+     *跳转到用户列表页面
+     * @return
+     */
+    @RequestMapping("/online_user_list.do")
+    public String toOnlineUserListPage() {
+        return "game/online_user_list";
+    }
+    /**
+     * 加载用户列表List
+     * @param user
+     * @return
+     */
+    @RequestMapping("/ajax_online_user_list.do")
+    @ResponseBody
+    public String ajaxOnlineUserList(gameUser gameUser){
+    	 User 	user=this.getCurrentUser();
+        return GameUserService.selectOnlineUserResultPageList(gameUser);
+    }
+    
+    
+    
     @RequestMapping("/ajax_add_coin.do")
     @ResponseBody
     public BussinessMsg ajaxAddCoin(Integer userId,Integer coin,Integer tagId,String desc){
