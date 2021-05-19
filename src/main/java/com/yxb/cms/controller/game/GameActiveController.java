@@ -36,8 +36,11 @@ package com.yxb.cms.controller.game;
 
 import com.yxb.cms.architect.constant.BussinessCode;
 import com.yxb.cms.architect.utils.BussinessMsgUtil;
+import com.yxb.cms.architect.utils.CommonHelper;
 import com.yxb.cms.controller.BasicController;
 import com.yxb.cms.domain.bo.BussinessMsg;
+import com.yxb.cms.domain.bo.ExcelExport;
+import com.yxb.cms.domain.vo.User;
 import com.yxb.cms.domain.vo.benzBmwInfo;
 import com.yxb.cms.domain.vo.rbBallInfo;
 import com.yxb.cms.service.game.GameActiveService;
@@ -52,6 +55,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 
 
@@ -68,20 +72,32 @@ public class GameActiveController extends BasicController {
      *跳转到用户列表页面
      * @return
      */
-    @RequestMapping("/rbBall_list.do")
-    public String rbBallList() {
+    @RequestMapping("/rbBall_thr_list.do")
+    public String rbBallList3(Model model) {
+    	model.addAttribute("period", 3);
+        return "game/rbBall_list";
+    }
+    @RequestMapping("/rbBall_five_list.do")
+    public String rbBallList5(Model model) {
+    	model.addAttribute("period", 5);
+        return "game/rbBall_list";
+    }
+    @RequestMapping("/rbBall_ten_list.do")
+    public String rbBallList10(Model model) {
+    	model.addAttribute("period", 10);
         return "game/rbBall_list";
     }
     @RequestMapping("/ajax_rbBall_list.do")
 	@ResponseBody
-	public String ajaxRbBallList(rbBallInfo rbBallInfo){
-		
+	public String ajaxRbBallList(rbBallInfo rbBallInfo,int period){
+    	rbBallInfo.setPeriod(period);
     	String str=GameActiveService.selectRbBallResultPageList(rbBallInfo);
 		return str;
 		
 	}
     @RequestMapping("/rbBall_add.do")
-	public String toRbBallAdd(){
+	public String toRbBallAdd(Model model,int period){
+    	model.addAttribute("period", period);
     	return "game/rbBall_edit";
 		
 	}
@@ -102,17 +118,26 @@ public class GameActiveController extends BasicController {
     
     @RequestMapping("/ajax_rbBall_excel_add.do")
    	@ResponseBody
-   	public BussinessMsg addRbBallExcel(HttpServletRequest request){
+   	public BussinessMsg addRbBallExcel(HttpServletRequest request,int period){
  
    	  try {
-          return GameActiveService.addRbBallExcel(request);
+          return GameActiveService.addRbBallExcel(request,period);
       } catch (Exception e) {
           log.error("保存错误",e);
           return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_ERROR);
       }
      
    	}
-    
+    /**
+     * 导出用户列表信息
+     * @param user 用户实体
+     * @return
+     */
+    @RequestMapping("/excel_rbBall_export.do")
+    public ModelAndView excelRbBallExport(rbBallInfo rbBallInfo){
+        ExcelExport excelExport = GameActiveService.excelRbBallInfoList(rbBallInfo);
+        return CommonHelper.getExcelModelAndView(excelExport);
+    }
     
     @RequestMapping("/benzBmw_list.do")
     public String benzBmwInfo() {

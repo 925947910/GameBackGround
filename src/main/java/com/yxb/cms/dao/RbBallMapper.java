@@ -58,9 +58,9 @@ public interface RbBallMapper {
 
     List<rbBallInfo> selectRbBallListByPage(rbBallInfo rbBallInfo);
 
-    List<rbBallInfo> getRbBallByIssue(long issue);
+    List<rbBallInfo> getRbBallByIssue(long issue,int period);
     int  addRbBall(rbBallInfo rbBallInfo);
-    int  setRbBallResult(long issue, String result);
+    int  setRbBallResult(rbBallInfo rbBallInfo);
     
     
 }

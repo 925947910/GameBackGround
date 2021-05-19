@@ -18,6 +18,8 @@ public class orderInfo  extends PageDto implements Serializable{
 	private Integer plat;
 	private Integer uid;
 	private Integer agentId;
+	private Integer presenterId;
+	
 	private float cost;
 	private String  currency;
 	private Integer coin;
@@ -71,6 +73,12 @@ public class orderInfo  extends PageDto implements Serializable{
 	}
 	public void setAgentId(Integer agentId) {
 		this.agentId = agentId;
+	}
+	public Integer getPresenterId() {
+		return presenterId;
+	}
+	public void setPresenterId(Integer presenterId) {
+		this.presenterId = presenterId;
 	}
 	public float getCost() {
 		return cost;

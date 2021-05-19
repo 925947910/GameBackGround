@@ -18,16 +18,6 @@
 </head>
 <body class="childrenBody" style="font-size: 12px; margin: 10px 10px 0;">
 	<form class="layui-form layui-form-pane">
-
-
-
-		<div class="layui-form-item">
-			<label class="layui-form-label">新增矿石数量</label>
-			<div class="layui-input-block">
-				<input type="text" class="layui-input" name="mineral" maxlength="20"
-					value="" placeholder="请输入新增矿石数量">
-			</div>
-		</div>
 		<div class="layui-form-item">
 			<label class="layui-form-label">操作者Id</label>
 			<div class="layui-input-block">
@@ -43,15 +33,15 @@
 			</div>
 		</div>
 		<div class="layui-form-item">
-			<label class="layui-form-label">矿石备注</label>
+			<label class="layui-form-label">限制时间/H</label>
 			<div class="layui-input-block">
-				<input type="text" class="layui-input" name="desc" maxlength="20"
-					value="" placeholder="请输入矿石备注">
+				<input type="text" class="layui-input" name="time" maxlength="20"
+					value="" placeholder="限制时间">
 			</div>
 		</div>
 
 		<div class="layui-form-item" style="text-align: center;">
-			<button class="layui-btn" lay-submit="" lay-filter="addMineral">保存</button>
+			<button class="layui-btn" lay-submit="" lay-filter="extractLimit">保存</button>
 			<button type="layui-btn" id="cancle"
 				class="layui-btn layui-btn-primary">取消</button>
 
@@ -65,14 +55,12 @@
                 form = layui.form,
                 common = layui.common,
                 layer = parent.layer === undefined ? layui.layer : parent.layer;
-
-
         /**保存*/
-        form.on("submit(addMineral)",function(data){
+        form.on("submit(extractLimit)",function(data){
             var addMineralLoading = top.layer.msg('数据提交中，请稍候',{icon: 16,time:false,shade:0.8});
             //登陆验证
             $.ajax({
-                url : '${ctx}/gameMineral/ajax_add_mineral.do',
+                url : '${ctx}/gameUser/ajax_extract_limit.do',
                 type : 'post',
                 async: false,
                 data : data.field,

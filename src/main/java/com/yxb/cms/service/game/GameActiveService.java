@@ -42,6 +42,8 @@ import com.yxb.cms.architect.utils.BussinessMsgUtil;
 import com.yxb.cms.architect.utils.CommonHelper;
 import com.yxb.cms.dao.RbBallMapper;
 import com.yxb.cms.domain.bo.BussinessMsg;
+import com.yxb.cms.domain.bo.ExcelExport;
+import com.yxb.cms.domain.vo.User;
 import com.yxb.cms.domain.vo.benzBmwInfo;
 import com.yxb.cms.domain.vo.rbBallInfo;
 import com.yxb.cms.handler.RedisClient;
@@ -93,8 +95,10 @@ public class GameActiveService {
 			}
     	}else{
     		
-    		  count=redisClient.zcount(Constants.REDIS_DB3, "BenzBmwSort", "0","-1");
-    	    	Set<String> keys=redisClient.zrevrange(Constants.REDIS_DB3, "BenzBmwSort", benzBmwInfo.getPage()*benzBmwInfo.getLimit()-benzBmwInfo.getLimit()-1, benzBmwInfo.getPage()*benzBmwInfo.getLimit());
+    		  count=redisClient.zcount(Constants.REDIS_DB3, "BenzBmwSort", "0","10000000000");
+    		    int start=(benzBmwInfo.getPage()-1)*benzBmwInfo.getLimit();
+    		    int end=benzBmwInfo.getPage()*benzBmwInfo.getLimit()-1;
+    	    	Set<String> keys=redisClient.zrevrange(Constants.REDIS_DB3, "BenzBmwSort",start,end);
     	    	
     	    	for (Iterator<String> iterator = keys.iterator(); iterator.hasNext();) {
     				String key = iterator.next();
@@ -155,14 +159,42 @@ public class GameActiveService {
         map.put("msg","");
         map.put("count",count);
         map.put("data", rbBallInfoList);
+        map.put("period", rbBallInfo.getPeriod());
         return Json.toJson(map);
     }
     
-    
+    /**
+     * 用户列表EXCEL导出
+     * @param user 用户实体
+     * @return
+     */
+    public ExcelExport excelRbBallInfoList(rbBallInfo rbBallInfo){
+    	rbBallInfo.setPage(1);
+    	rbBallInfo.setLimit(1000);
+        ExcelExport excelExport = new ExcelExport();
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        
+        long zeroSec=calendar.getTimeInMillis()/1000;
+        rbBallInfo.setBegin(zeroSec-1);
+        rbBallInfo.setEnd(zeroSec+1+24*3600);
+        List<rbBallInfo> rbBallInfoList = RbBallMapper.selectRbBallListByPage(rbBallInfo);
+        
+        excelExport.addColumnInfo("id","id");
+        excelExport.addColumnInfo("期No.","issue");
+        excelExport.addColumnInfo("累计投注","lotteryPool");
+        excelExport.addColumnInfo("开奖结果","lotteryResult");
+        excelExport.addColumnInfo("是否开奖","isDraw");
+        excelExport.addColumnInfo("累计中奖","totalWin");
+        excelExport.setDataList(rbBallInfoList);
+        return excelExport;
+    }
  
 
     @SystemServiceLog(description="addRbBallService")
-    public BussinessMsg    addRbBallExcel(HttpServletRequest request) throws Exception{
+    public BussinessMsg    addRbBallExcel(HttpServletRequest request,int period) throws Exception{
 
     	MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 
@@ -181,7 +213,7 @@ public class GameActiveService {
             	 String[] p2 =lo.get(1).toString().split("\\.");
             	  long issueNum= new Long(p1[0]);
             	  String result= p2[0];
-            	  addRbBall(issueNum, result);
+            	  addRbBall(issueNum,period, result);
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -191,7 +223,7 @@ public class GameActiveService {
         return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
     }
     @Transactional
-    public void addRbBall(long issueNum,String result) throws Exception{
+    public void addRbBall(long issueNum,int period,String result) throws Exception{
     		Calendar calendar = Calendar.getInstance();
     		long day = calendar.get(Calendar.DATE);
     		long month = calendar.get(Calendar.MONTH)+1;
@@ -205,15 +237,16 @@ public class GameActiveService {
     		long issue= year*10000000+month*100000+day*1000+issueNum;
     		rbBallInfo rbBallInfo=new rbBallInfo();
     		rbBallInfo.setIssue(issue);
+    		rbBallInfo.setPeriod(period);
     		rbBallInfo.setLotteryPool(0);
     		rbBallInfo.setLotteryPrice(0);
     		rbBallInfo.setLotteryResult(result);
     		rbBallInfo.setTotalWin(0);
     		rbBallInfo.setIsDraw(0);
     		rbBallInfo.setTime(time);
-    		List<rbBallInfo> l=RbBallMapper.getRbBallByIssue(issue);
+    		List<rbBallInfo> l=RbBallMapper.getRbBallByIssue(issue,period);
     		if(l!=null&&l.size()==1){
-    			RbBallMapper.setRbBallResult(issue, result);
+    			RbBallMapper.setRbBallResult(rbBallInfo);
     		}else{
     			RbBallMapper.addRbBall(rbBallInfo);
     		}
@@ -221,7 +254,7 @@ public class GameActiveService {
     
     @SystemServiceLog(description="addRbBallService")
     public BussinessMsg addRbBall(rbBallInfo rbBallInfo) throws Exception{
-    	addRbBall(rbBallInfo.getIssue(), rbBallInfo.getLotteryResult());
+    	addRbBall(rbBallInfo.getIssue(),rbBallInfo.getPeriod(), rbBallInfo.getLotteryResult());
         return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
     }
     

@@ -63,11 +63,29 @@ public class PageDto {
     /**
      * 查询项
      */
+    protected String searchTerm0;
+    /**
+     * 查询内容
+     */
+    protected String searchContent0;
+    /**
+     * 查询项
+     */
+    
     protected String searchTerm1;
     /**
      * 查询内容
      */
     protected String searchContent1;
+    /**
+     * 查询项
+     */
+    protected String searchTerm2;
+    /**
+     * 查询内容
+     */
+    protected String searchContent2;
+
     /**
      * 开始时间
      */
@@ -135,6 +153,18 @@ public class PageDto {
 		this.searchContent = searchContent;
 	}
 	
+	public String getSearchTerm0() {
+		return searchTerm0;
+	}
+	public void setSearchTerm0(String searchTerm0) {
+		this.searchTerm0 = searchTerm0;
+	}
+	public String getSearchContent0() {
+		return searchContent0;
+	}
+	public void setSearchContent0(String searchContent0) {
+		this.searchContent0 = searchContent0;
+	}
 	public String getSearchTerm1() {
 		return searchTerm1;
 	}
@@ -146,6 +176,18 @@ public class PageDto {
 	}
 	public void setSearchContent1(String searchContent1) {
 		this.searchContent1 = searchContent1;
+	}
+	public String getSearchTerm2() {
+		return searchTerm2;
+	}
+	public void setSearchTerm2(String searchTerm2) {
+		this.searchTerm2 = searchTerm2;
+	}
+	public String getSearchContent2() {
+		return searchContent2;
+	}
+	public void setSearchContent2(String searchContent2) {
+		this.searchContent2 = searchContent2;
 	}
 	public String getBeginStr() {
 		return beginStr;

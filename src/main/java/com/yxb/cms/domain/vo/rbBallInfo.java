@@ -12,6 +12,7 @@ public class rbBallInfo extends PageDto implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private Integer id;
+	private Integer period;
 	private Long issue;
 	private String lotteryResult;
 	private Integer lotteryPool;
@@ -24,6 +25,12 @@ public class rbBallInfo extends PageDto implements Serializable{
 	}
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	public Integer getPeriod() {
+		return period;
+	}
+	public void setPeriod(Integer period) {
+		this.period = period;
 	}
 	public Long getIssue() {
 		return issue;

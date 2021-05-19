@@ -20,6 +20,8 @@ public class gameUser extends PageDto implements Serializable {
 	private  Integer    coin;
 	private  Integer    agentId;
 	private  Integer    presenterId;
+	private  Long    extractLimit;
+	
 	private  Long   regTime;
 	private  Integer    version;
 	private  Long   Online;
@@ -106,6 +108,13 @@ public class gameUser extends PageDto implements Serializable {
 	}
 	public void setPresenterId(Integer presenterId) {
 		this.presenterId = presenterId;
+	}
+	
+	public Long getExtractLimit() {
+		return extractLimit;
+	}
+	public void setExtractLimit(Long extractLimit) {
+		this.extractLimit = extractLimit;
 	}
 	public Long getRegTime() {
 		return regTime;

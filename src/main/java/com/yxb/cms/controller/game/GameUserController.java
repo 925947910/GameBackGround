@@ -76,8 +76,8 @@ public class GameUserController extends BasicController {
     public String ajaxUserList(gameUser gameUser){
     	 User 	user=this.getCurrentUser();
     	if(!user.getUserLoginName().equals("admin")&&!user.getUserLoginName().equals("mng001")){
-    		gameUser.setSearchTerm1("agentIdTerm");
-    		gameUser.setSearchContent1(user.getUserId()+"");
+    		gameUser.setSearchTerm0("agentIdTerm");
+    		gameUser.setSearchContent0(user.getUserId()+"");
     	}
     	
         return GameUserService.selectUserResultPageList(gameUser);
@@ -91,6 +91,8 @@ public class GameUserController extends BasicController {
 			 return "game/coin_edit";
 		case "freeze":
 			 return "game/freeze_edit";
+		case "extractLimit":
+			 return "game/extractLimit_edit";	
 		default:
 			 return "game/pwd_edit";
 		}
@@ -151,12 +153,25 @@ public class GameUserController extends BasicController {
     		   return GameUserService.userFreeze(userId,freeze);
            } catch (Exception e) {
                log.error("",e);
-               return BussinessMsgUtil.returnCodeMessage(BussinessCode.UPDATE_PWD_FAILED);
+               return BussinessMsgUtil.returnCodeMessage(BussinessCode.UNFREEZE_FAILED);
            }
     	
     	
        
     } 
+    @RequestMapping("/ajax_extract_limit.do")
+    @ResponseBody
+    public BussinessMsg ajaxExtractLimit(Integer userId,int time){
+    	   try {
+    		   return GameUserService.extractLimit(userId,time);
+           } catch (Exception e) {
+               log.error("",e);
+               return BussinessMsgUtil.returnCodeMessage(BussinessCode.EXTRACT_LIMIT_FAILED);
+           }
+    	
+    	
+       
+    }
     
     
     @RequestMapping("/gameUser_add.do")

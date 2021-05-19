@@ -110,7 +110,7 @@ public class GameUserService {
     	if(!StringUtils.isEmpty(id)){
     		idList.add(id+"");
     	}else{
-    	        Set<String> uids=redisClient.zrevrangeByScore(Constants.REDIS_DB5, "Onlines", now, now-60);
+    	        Set<String> uids=redisClient.zrevrangeByScore(Constants.REDIS_DB5, "Onlines", now, now-120);
     	        count=uids.size();
     	        int beginIndex=user.getPage()*user.getLimit()-user.getLimit();
     	        int endIndex=user.getPage()*user.getLimit();  
@@ -126,19 +126,22 @@ public class GameUserService {
 				}
 			 }	
     	 }
-    	redisClient.zremrangeByScore(Constants.REDIS_DB5, "Onlines", "0", (now-60)+"");
+    	redisClient.zremrangeByScore(Constants.REDIS_DB5, "Onlines", "0", (now-120)+"");
        for (int i = 0; i < idList.size(); i++) {
     	   Map<String,String> userMap=redisClient.hgetAll(Constants.REDIS_DB0, "user:"+idList.get(i));
     	   Double onlineData=redisClient.zscore(Constants.REDIS_DB5, "Onlines", idList.get(i));
     	   Long online=0l;
-    	   if(onlineData!=null&&userMap!=null&&!userMap.isEmpty()){
-    		   online=onlineData.longValue(); 
+    	   if(userMap!=null&&!userMap.isEmpty()){
+    		   
+    		   online=onlineData==null?(now-5*60):onlineData.longValue();
     		   gameUser gameUser= new gameUser();
        		   gameUser.setId(Integer.parseInt(userMap.get("id")));
        		   gameUser.setAcc(userMap.get("acc"));
        		   gameUser.setCoin(Integer.parseInt(userMap.get("coin")));
        		   gameUser.setNick(userMap.get("nick"));
        		   gameUser.setSex(Integer.parseInt(userMap.get("sex")));
+       		   Long extractLimit=userMap.get("extractLimit")==null?0:Long.parseLong(userMap.get("extractLimit"));
+       		   gameUser.setExtractLimit(extractLimit);
        		   gameUser.setOnline(online);
        		   gameUsers.add(gameUser);
     	   }else{
@@ -171,6 +174,16 @@ public class GameUserService {
 		}
         return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
     }
+    public BussinessMsg   extractLimit(Integer userId,Integer time)throws Exception{
+    	Date Date =new Date(); 
+		long now=	Date.getTime()/1000;
+		
+		redisClient.hset(Constants.REDIS_DB0, "user:"+userId, "extractLimit", (now+time*3600)+"");
+        return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
+    }
+    
+    
+    
     @Transactional
     @SystemServiceLog(description="添加玩家金币Service")
     public BussinessMsg   addCoin(Integer userId,Integer coin,Integer tagId,String desc)throws Exception{

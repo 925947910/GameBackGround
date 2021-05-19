@@ -37,7 +37,8 @@
 							<div class="layui-input-inline" style="width: 110px;">
 								<select name="searchTerm">
 									<option value="uidTerm">玩家ID</option>
-									<option value="reasonTerm">描述</option>
+									<option value="agentIdTerm">代理ID</option>
+									
 								</select>
 							</div>
 							<div class="layui-input-inline" style="width: 145px;">
@@ -46,7 +47,8 @@
 							</div>
 							<div class="layui-input-inline" style="width: 110px;">
 								<select name="searchTerm1">
-									<option value="agentIdTerm">代理ID</option>
+									<option value="reasonTerm">描述</option>
+									<option value="typeTerm">类型</option>
 								</select>
 							</div>
 							<div class="layui-input-inline" style="width: 145px;">

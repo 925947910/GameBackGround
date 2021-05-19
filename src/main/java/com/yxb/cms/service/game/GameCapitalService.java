@@ -50,14 +50,17 @@ import com.yxb.cms.dao.OrderMapper;
 import com.yxb.cms.domain.bo.BussinessMsg;
 import com.yxb.cms.domain.vo.billsInfo;
 import com.yxb.cms.domain.vo.freezeInfo;
+import com.yxb.cms.domain.vo.gameChannel;
 import com.yxb.cms.domain.vo.gameRec;
 import com.yxb.cms.domain.vo.gameUser;
 import com.yxb.cms.domain.vo.orderInfo;
 import com.yxb.cms.handler.RedisClient;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.util.StringUtil;
 import org.nutz.json.Json;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -141,7 +144,56 @@ public class GameCapitalService {
         map.put("data", orderInfoList);
         return Json.toJson(map);
     }
-
+    public String  selectChannelPageList(gameChannel channel,HttpServletRequest request){
+    	List<gameChannel> gameChannels=new ArrayList<gameChannel>();
+    	        List<String> idList=new ArrayList<String>();
+    	        Set<String> channels=redisClient.keys(Constants.REDIS_DB1, "interfaceUri:*");
+    	        channels.remove("interfaceUri:0");
+    	        long   count=channels.size();
+    	        int beginIndex=channel.getPage()*channel.getLimit()-channel.getLimit();
+    	        int endIndex=channel.getPage()*channel.getLimit();  
+    	      int index=1;  
+    		for (Iterator iterator = channels.iterator(); iterator.hasNext();) {
+				String string = (String) iterator.next();
+				index+=1;
+				if(index>=beginIndex&&index<=endIndex){
+					idList.add(string);
+				}
+				if(index>endIndex){
+					break;
+				}
+			 }	
+       for (int i = 0; i < idList.size(); i++) {
+    	   Map<String,String> channelMap=redisClient.hgetAll(Constants.REDIS_DB1,idList.get(i));
+    	   if(channelMap!=null&&!channelMap.isEmpty()){
+    		   String[] k=idList.get(i).split(":");
+    		   gameChannel gameChannel= new gameChannel();
+    		   gameChannel.setId(Integer.parseInt(k[1]));
+    		   gameChannel.setName(channelMap.get("name"));
+    		   gameChannel.setExtractPer(Integer.parseInt(channelMap.get("extractPer")));
+    		   gameChannels.add(gameChannel);
+    	   }else{
+    		   count-=1; 
+    	   } 
+    	}
+       
+       Map<String,String> channelMap=redisClient.hgetAll(Constants.REDIS_DB1,"interfaceUri:0");
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("code",0);
+        map.put("msg","");
+        map.put("count",count);
+        map.put("data", gameChannels);
+        map.put("channelIn",channelMap.get("channelIn"));
+        map.put("channelOut",channelMap.get("channelOut"));
+        return Json.toJson(map);
+    }
+    public BussinessMsg   channelChoose(String channelName,String act)throws Exception{
+    	redisClient.hset(Constants.REDIS_DB1,"interfaceUri:0", act, channelName);
+        return BussinessMsgUtil.returnCodeMessage(BussinessCode.GLOBAL_SUCCESS);
+        
+    	
+    }
+    
     @SystemServiceLog(description="审核提现Service")
     public BussinessMsg   orderReview(int orderId,int succ)throws Exception{
     	List<orderInfo> orderInfos=OrderMapper.OrderInfoById(orderId);

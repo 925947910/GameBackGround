@@ -85,8 +85,8 @@ public enum BussinessCode {
     ADD_COIN_FAILED("1515","添加金币失败"),
 	ADD_MINERAL_FAILED("1516","添加金币失败"),
 	UPDATE_PWD_FAILED("1517","修改密码失败"),
-	ADD_RBBALL_EXCEL_FAILED("1518","文件不能为空");
-
+	ADD_RBBALL_EXCEL_FAILED("1518","文件不能为空"),
+	EXTRACT_LIMIT_FAILED("1519","限制 提现失败");
 	BussinessCode(String code, String msg) {
 		this.code = code;
 		this.msg = msg;

@@ -30,7 +30,8 @@
                                 <option value="idTerm">玩家ID</option>
                                 <option value="accTerm">玩家账号</option>
                                 <option value="nickTerm">玩家昵称</option>
-                                <option value="agentIdTerm">代理Id</option>
+                                <option value="agentIdTerm">代理ID</option>
+                                <option value="presenterIdTerm">推荐者ID</option>
                                
                             </select>
                         </div>
@@ -206,9 +207,6 @@
         </shiro:hasPermission>
         <shiro:hasPermission name="42wUOYef">
             <a class="layui-btn layui-btn-xs update_user" lay-event="update_pwd"><i class="layui-icon larry-icon larry-bianji2"></i>修改密码</a>
-        </shiro:hasPermission>
-         <shiro:hasPermission name="uG9vazWK">
-            <a class="layui-btn layui-btn-xs mineral_add" lay-event="mineral_add"><i class="layui-icon larry-icon larry-bianji2"></i>添加矿石</a>
         </shiro:hasPermission>
         <shiro:hasPermission name="QsTIzP4o">
             <a class="layui-btn layui-btn-xs user_freeze" lay-event="user_freeze"><i class="layui-icon larry-icon larry-bianji2"></i>解冻冻结</a>

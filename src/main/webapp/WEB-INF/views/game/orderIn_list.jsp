@@ -40,25 +40,25 @@
 									<option value="orderNoTerm">订单号</option>
 									<option value="uidTerm">玩家ID</option>
 									<option value="agentIdTerm">代理ID</option>
+									<option value="presenterIdTerm">推荐者ID</option>
 								</select>
 							</div>
 							<div class="layui-input-inline" style="width: 145px;">
 								<input type="text" name="searchContent" value=""
 									placeholder="请输入关键字" class="layui-input search_input">
 							</div>
-							
+							<input hidden="true" type="text" name="searchTerm2"
+								value="statusTerm">
 							<div class="layui-input-inline" style="width: 110px;">
-								<select name="searchTerm1">
-								    <option  value="orderTypeTerm">订单类型</option>
-									<option  value="succTerm">成功订单</option>
-									<
+								<select name="searchContent2">
+									<option value="2">处理中</option>
+									<option value="3">成功</option>
+									<option value="4">失败</option>
 								</select>
 							</div>
-							<div class="layui-input-inline" style="width: 145px;">
-								<input type="text" name="searchContent1" value=""
-									placeholder="请输入关键字" class="layui-input search_input">
-							</div>
-							
+
+
+
 							<a class="layui-btn orderSearchList_btn" lay-submit lay-filter="orderSearchFilter"><i class="layui-icon larry-icon larry-chaxun7"></i>查询</a>
 						</form>
 					</div>
@@ -110,6 +110,10 @@
         table.render({
             elem: '#orderTableList',
             url: '${ctx}/gameCapital/ajax_order_list.do',
+            where: {
+                searchTerm1:'orderTypeTerm',
+                searchContent1:'1'
+                },
             id:'orderTableId',
             method: 'post',
             height:'full-140',
@@ -121,16 +125,16 @@
                 {field:'id', title: '订单ID',align:'center' },
                 {field:'uid', title: '玩家ID',align:'center'},
                 {field:'agentId', title: '代理ID',align:'center'},
+                {field:'presenterId', title: '推荐者ID',align:'center'},
                 {field:'accountOut', title: '转出账户',align:'center'},
-                {field:'accountIn', title: '转入账户',align:'center'},
-                {field:'orderRemote', title: '订单号',align:'center'},
-                {field:'currency', title: '币种',align:'center'},
+                {field:'orderLocal', title: '本地订单号',align:'center'},
+                {field:'orderRemote', title: '平台订单号',align:'center'},
+                {field:'plat', title: '通道',align:'center',templet: '#platTpl'},
                 {field:'coin', title: '金币',align:'center'},
                 {field:'cost', title: '转账金额',align:'center'},
                 {field:'orderType', title: '订单类型',align:'center',templet: '#orderTypeTpl'},
                 {field:'status', title: '订单状态',align:'center',templet: '#statusTpl'},
-                {field:'time', title: '时间',align:'center',templet:"<div>{{layui.util.toDateString(d.time*1000)}}</div>"},
-                {title: '操作', align:'center', width: '17%',toolbar: '#orderBar'}
+                {field:'time', title: '时间',align:'center',templet:"<div>{{layui.util.toDateString(d.time*1000)}}</div>"}
                 ]],
             page: true,
             done: function (res, curr, count) {
@@ -152,8 +156,11 @@
                  	        endStr:data.field.endStr,
                     	    searchTerm:data.field.searchTerm,
                             searchContent:data.field.searchContent,
-                            searchTerm1:data.field.searchTerm1,
-                            searchContent1:data.field.searchContent1
+                            searchTerm1:'orderTypeTerm',
+                            searchContent1:'1',
+                            searchTerm2:data.field.searchTerm2,
+                            searchContent2:data.field.searchContent2,
+                            
                             },
                     height: 'full-140',
                     page: true,
@@ -200,6 +207,17 @@
                                          提现订单
     {{# } else { }}
     {{d.orderType}}
+    {{# }  }}
+</script>
+<script type="text/html" id="platTpl">
+    {{# if(d.plat == 1){ }}
+                    OtPay
+    {{# } else if(d.plat == 2){ }}
+                    TikPay
+    {{# } else if(d.plat == 3){ }}
+                    AmPay
+    {{# } else { }}
+    {{d.plat}}
     {{# }  }}
 </script>
 <script type="text/html" id="statusTpl">

@@ -34,7 +34,7 @@
             <input type="text" class="layui-input" name="lotteryResult" lay-verify="required|lotteryResult" maxlength="20" value="${rbBallInfo.lotteryResult}" placeholder="请输入0-9结果">
         </div>
     </div>
-   
+    <input hidden="hidden" type="text" name="period" value="${period}">
     <div class="layui-form-item" style="text-align: center;">
             <button class="layui-btn" lay-submit="" lay-filter="saveUser">保存</button>
             <button type="layui-btn" id="cancle" class="layui-btn layui-btn-primary">取消</button>

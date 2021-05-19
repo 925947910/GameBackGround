@@ -36,9 +36,11 @@ package com.yxb.cms.controller.game;
 
 import com.yxb.cms.controller.BasicController;
 import com.yxb.cms.domain.bo.BussinessMsg;
+import com.yxb.cms.domain.dto.PageDto;
 import com.yxb.cms.domain.vo.User;
 import com.yxb.cms.domain.vo.billsInfo;
 import com.yxb.cms.domain.vo.freezeInfo;
+import com.yxb.cms.domain.vo.gameChannel;
 import com.yxb.cms.domain.vo.gameRec;
 import com.yxb.cms.domain.vo.orderInfo;
 import com.yxb.cms.service.game.GameCapitalService;
@@ -112,8 +114,8 @@ public class GameCapitalController extends BasicController {
 		
 	 User 	user=this.getCurrentUser();
 	if(!user.getUserLoginName().equals("admin")&&!user.getUserLoginName().equals("mng001")){
-		billsInfo.setSearchTerm1("agentIdTerm");
-		billsInfo.setSearchContent1(user.getUserId()+"");
+		billsInfo.setSearchTerm0("agentIdTerm");
+		billsInfo.setSearchContent0(user.getUserId()+"");
 	}
 		
 		try {
@@ -159,9 +161,25 @@ public class GameCapitalController extends BasicController {
 	 *跳转到用户列表页面
 	 * @return
 	 */
-	@RequestMapping("/order_list.do")
-	public String toOrderListPage() {
-		return "game/order_list";
+	@RequestMapping("/orderIn_list.do")
+	public String toOrderInListPage() {
+		return "game/orderIn_list";
+	}
+	/**
+	 *跳转到用户列表页面
+	 * @return
+	 */
+	@RequestMapping("/orderOut_list.do")
+	public String toOrderOutListPage() {
+		return "game/orderOut_list";
+	}
+	 /**
+	 *跳转到用户列表页面
+	 * @return
+	 */
+	@RequestMapping("/orderSucc_list.do")
+	public String toOrderSuccListPage() {
+		return "game/orderSucc_list";
 	}
 	/**
 	 * 加载用户列表List
@@ -173,19 +191,19 @@ public class GameCapitalController extends BasicController {
 	public String ajaxOrderList(orderInfo orderInfo,HttpServletRequest request){
 		 User 	user=this.getCurrentUser();
 		if(!user.getUserLoginName().equals("admin")&&!user.getUserLoginName().equals("mng001")){
-			orderInfo.setSearchTerm("agentIdTerm");
-			orderInfo.setSearchContent(user.getUserId()+"");
+			orderInfo.setSearchTerm0("agentIdTerm");
+			orderInfo.setSearchContent0(user.getUserId()+"");
 		}
 		try {
 			if (!StringUtils.isBlank(orderInfo.getBeginStr())) {
 				DateFormat format=	new SimpleDateFormat("yyyy-MM-dd");
 				Date date=format.parse(orderInfo.getBeginStr());
-				orderInfo.setBegin(date.getTime()/1000);
+				orderInfo.setBegin(date.getTime()/1000-9000);
 			}
 			if (!StringUtils.isBlank(orderInfo.getEndStr())) {
 				DateFormat format=	new SimpleDateFormat("yyyy-MM-dd");
 				Date date=format.parse(orderInfo.getEndStr());
-				orderInfo.setEnd(date.getTime()/1000);
+				orderInfo.setEnd(date.getTime()/1000-9000);
 			}
 		} catch (Exception e) {
 			log.error("",e);
@@ -205,5 +223,29 @@ public class GameCapitalController extends BasicController {
 		
 	}
 
-
+	/**
+	 *跳转到用户列表页面
+	 * @return
+	 */
+	@RequestMapping("/channel_list.do")
+	public String toChannelListPage() {
+		return "game/channel_list";
+	}
+	
+	
+	@RequestMapping("/ajax_channel_list.do")
+	@ResponseBody
+	public String ajaxChannelList(gameChannel gameChannel,HttpServletRequest request){
+		
+		String str=GameCapitalService.selectChannelPageList(gameChannel, request);
+		return str;
+		
+	}
+	@RequestMapping("/ajax_channel_choose.do")
+	@ResponseBody
+	public BussinessMsg channelChoose(String channelName,String act) throws Exception {
+			return GameCapitalService.channelChoose(channelName,act);
+		
+		
+	}	
 }

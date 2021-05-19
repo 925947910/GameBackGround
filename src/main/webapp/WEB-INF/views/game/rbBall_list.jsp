@@ -28,8 +28,7 @@
 				<blockquote class="layui-elem-quote mylog-info-tit">
 					<div class="layui-inline">
 						<form class="layui-form" id="billsSearchForm">
-						
-							
+						<input id="period" type="text" hidden="true" name="period"/>	
 						</form>
 					</div>
 					<shiro:hasPermission name="63Ry9Rel">
@@ -39,15 +38,19 @@
 							</a>
 						</div>
 					</shiro:hasPermission>
-                    <shiro:hasPermission name="63Ry9Rel">
+                    <shiro:hasPermission name="XBk5ozh4">
 						<div class="layui-inline">
 							<button type="button" class="layui-btn" id="uploadExcel">
 						<i class="layui-icon">&#xe67c;</i>上传excel
 					</button>
 						</div>
-					</shiro:hasPermission>
-					
-
+					</shiro:hasPermission>	
+					<shiro:hasPermission name="oRNXWs4y">
+                    <div class="layui-inline">
+                        <a class="layui-btn layui-btn-normal excelRbBallExport_btn"  style="background-color:#5FB878"> <i class="layui-icon larry-icon larry-danye"></i>导出</a>
+                    </div>
+                </shiro:hasPermission>
+                
 
 				</blockquote>
 				<div class="larry-separate"></div>
@@ -77,6 +80,9 @@
         table.render({
             elem: '#billsTableList',
             url: '${ctx}/gameActive/ajax_rbBall_list.do',
+            where: {
+            	period:"${period}"
+                },
             id:'billsTableId',
             method: 'post',
             height:'full-140',
@@ -94,6 +100,7 @@
             ]],
             page: true,
             done: function (res, curr, count) {
+            	 $("#period").val(res.period);
                 common.resizeGrid();
                 layer.close(loading);
 
@@ -101,15 +108,26 @@
         });
         
         $(".rbBallAdd_btn").click(function(){
-            var url = "${ctx}/gameActive/rbBall_add.do";
+        	var period = $("#period").val();
+            var url = "${ctx}/gameActive/rbBall_add.do?period="+period;
             common.cmsLayOpen('新增一期',url,'550px','265px');
         });
-
+        /**导出用户信息*/
+        $(".excelRbBallExport_btn").click(function(){
+            var url = '${ctx}/gameActive/excel_rbBall_export.do';
+            $("#billsSearchForm").attr("action",url);
+            $("#billsSearchForm").submit();
+        });
         upload.render({
-            elem: '#uploadExcel'
-            ,url:  "${ctx}/gameActive/ajax_rbBall_excel_add.do"//此处为所上传的请求路径
+             elem: '#uploadExcel'
+            ,url:  "${ctx}/gameActive/ajax_rbBall_excel_add.do"//此处为所上传的请求路径  
             ,accept: 'file' //普通文件
             ,exts: 'xls|excel|xlsx' //只允许上传压缩文件
+            	 ,before: function(obj){
+                     layer.load(); //上传loading
+                     this.data={'period':$("#period").val()};
+                 }
+
             ,done: function(res){
             	if(res.returnCode == 0000){
                     common.cmsLaySucMsg("保存成功")

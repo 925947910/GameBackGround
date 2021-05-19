@@ -98,8 +98,9 @@
                 {field:'nick', title: '玩家昵称',align:'center'},
                 {field:'sex', title: '性别',align:'center'},
                 {field:'coin', title: '金币',align:'center' },
-                {field:'Online', title: '最后投注时间',align:'center',templet:"<div>{{layui.util.toDateString(d.Online*1000)}}</div>"}
-                
+                {field:'extractLimit', title: '提现限制',align:'center',templet:"<div>{{layui.util.toDateString(d.extractLimit*1000)}}</div>"},
+                {field:'Online', title: '最后投注时间',align:'center',templet:"<div>{{layui.util.toDateString(d.Online*1000)}}</div>"},
+                {title: '操作', align:'center', width: '17%',toolbar: '#userBar'}
             ]],
             page: true,
             done: function (res, curr, count) {
@@ -151,25 +152,12 @@
                 var url =  "${ctx}/gameUser/user_update.do?userId="+userId+"&act="+act;
                 common.cmsLayOpen('编辑金币',url,'550px','265px');
 
-            //添加矿石
-            }else if(layEvent === 'mineral_add') {
-                    var userId = data.id;
-                    var act = "mineral";
-                    var url =  "${ctx}/gameUser/user_update.do?userId="+userId+"&act="+act;
-                    common.cmsLayOpen('编辑矿石',url,'550px','265px');
-
-               
-                }else if(layEvent === 'update_pwd'){
-                	 var userId = data.id;
-                     var act = "pwd";
-                     var url =  "${ctx}/gameUser/user_update.do?userId="+userId+"&act="+act;
-                     common.cmsLayOpen('修改密码',url,'550px','265px');
-                	
-                }else if(layEvent === 'user_freeze'){
+            //提现限制
+            }else if(layEvent === 'extract_limit'){
                	 var userId = data.id;
-                 var act = "freeze";
+                 var act = "extractLimit";
                  var url =  "${ctx}/gameUser/user_update.do?userId="+userId+"&act="+act;
-                 common.cmsLayOpen('解冻冻结',url,'550px','265px');
+                 common.cmsLayOpen('提现限制',url,'550px','265px');
             	
             }
             
@@ -188,7 +176,9 @@
 <!--工具条 -->
 <script type="text/html" id="userBar">
     <div class="layui-btn-group">
-      
+        <shiro:hasPermission name="vfCR0yJH">
+            <a class="layui-btn layui-btn-xs extract_limit" lay-event="extract_limit"><i class="layui-icon larry-icon larry-bianji2"></i>提现限制</a>
+        </shiro:hasPermission>
     </div>
 </script>
 
