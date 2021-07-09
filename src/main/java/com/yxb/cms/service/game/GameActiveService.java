@@ -244,7 +244,7 @@ public class GameActiveService {
     		rbBallInfo.setTotalWin(0);
     		rbBallInfo.setIsDraw(0);
     		rbBallInfo.setTime(time);
-    		List<rbBallInfo> l=RbBallMapper.getRbBallByIssue(issue,period);
+    		List<rbBallInfo> l=RbBallMapper.getRbBallByIssue(rbBallInfo);
     		if(l!=null&&l.size()==1){
     			RbBallMapper.setRbBallResult(rbBallInfo);
     		}else{
